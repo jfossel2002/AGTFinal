@@ -28,8 +28,10 @@ func RunSpecificInstance() {
 	fmt.Println("\nThe optimal canidate is ", opt_canidate.Name, " ", opt_canidate.Position)
 	fmt.Println("The optimal cost is ", optimalCost)
 	winner := voting_systems.InitiateSTV(canidates, totalVoters, voters)
-	fmt.Println("The winner is ", winner.Name, " ", winner.Position)
+	fmt.Println("The winner From STV is ", winner.Name, " ", winner.Position)
 	winnerCost := voting_systems.GetSocailCost(winner, voters)
-	fmt.Println("The winner cost is ", winnerCost)
+	fmt.Println("The winner From STV cost is ", winnerCost)
+
+	//Add Borda count determination here
 
 }
