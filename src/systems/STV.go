@@ -1,15 +1,15 @@
-package primary
+package voting_systems
 
 import (
 	"math"
 )
 
-func DetermineRoundWinner(candidates []Candidate, totalVoters int, voters []Voter) float64 {
+func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float64, Candidate) {
 	cost := -1.0
 	//Base case
 	for i := range candidates {
 		if candidates[i].NumVotes > totalVoters/2 {
-			return GetSocailCost(candidates[i], voters)
+			return GetSocailCost(candidates[i], voters), candidates[i]
 		}
 	}
 
@@ -28,31 +28,14 @@ func DetermineRoundWinner(candidates []Candidate, totalVoters int, voters []Vote
 		candidates = append(candidates[:candidatePosition], candidates[candidatePosition+1:]...)
 
 		// Redetermine votes based on voters' next preferences
-		//printCanidates(candidates)
 		candidates = Round(voters, candidates)
 
 		// Recursive call to handle the next round
-		return DetermineRoundWinner(candidates, totalVoters, voters)
+		return SimulateSTV(candidates, totalVoters, voters)
 	}
 
-	return cost
-}
-
-// Finds the optimal canidate based on the social cost
-func DetermineOptimal(Candidates []Candidate, voters []Voter) (float64, int) {
-	minCost := 1000000.0
-	canidatePosition := 0
-	for j := 0; j < len(Candidates); j++ {
-		GetSocailCost(Candidates[j], voters)
-		distance := GetSocailCost(Candidates[j], voters)
-		if distance < minCost {
-			minCost = distance
-			canidatePosition = j
-		}
-	}
-	//fmt.Println("The optimal canidate is ", Candidates[canidatePosition].name, " ", Candidates[canidatePosition].position, " with a cost of ", minCost)
-	return minCost, canidatePosition
-
+	//Return empty candidate if no winner is found
+	return cost, Candidate{}
 }
 
 // Simulates a round by determining the number of votes each canidate gets
