@@ -4,6 +4,12 @@ import (
 	"math"
 )
 
+func InitiateSTV(candidates []Candidate, totalVoters int, voters []Voter) Candidate {
+	Round([]Voter{}, []Candidate{})
+	_, winner := SimulateSTV([]Candidate{}, 0, []Voter{})
+	return winner
+}
+
 func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float64, Candidate) {
 	cost := -1.0
 	//Base case
