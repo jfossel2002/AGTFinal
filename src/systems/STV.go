@@ -5,8 +5,8 @@ import (
 )
 
 func InitiateSTV(candidates []Candidate, totalVoters int, voters []Voter) Candidate {
-	Round([]Voter{}, []Candidate{})
-	_, winner := SimulateSTV([]Candidate{}, 0, []Voter{})
+	candidates = Round(voters, candidates)
+	_, winner := SimulateSTV(candidates, totalVoters, voters)
 	return winner
 }
 

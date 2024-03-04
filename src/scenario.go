@@ -1,44 +1,33 @@
 // File to run a specific scenario
 package primary
 
-func runSpecificInstance() {
-	/*totalVoters := 7
-	/*canidates := []Candidate{
-		{"A", 0.11, 0},
-		{"B", 0.11, 0},
-		{"C", 3.78, 0},
-		{"D", 5.63, 0},
-		{"E", 9.92, 0},
+import (
+	voting_systems "AGT_Midterm/src/systems"
+	"fmt"
+)
+
+func RunSpecificInstance() {
+	totalVoters := 50
+	canidates := []voting_systems.Candidate{
+		{Name: "A", Position: 0.11, NumVotes: 0},
+		{Name: "B", Position: 0.11, NumVotes: 0},
+		{Name: "C", Position: 3.78, NumVotes: 0},
+		{Name: "D", Position: 5.63, NumVotes: 0},
+		{Name: "E", Position: 9.92, NumVotes: 0},
 	}
 
-	voters := []Voter{
-		{"V1", 23, 1.51},
-		{"V2", 23, 4.45},
-		{"V3", 4, 5.45},
-	}*/
-
-	/*canidates := []Candidate{
-		{"W", 0, 0},
-		{"X", 4, 0},
-		{"C", 8, 0},
+	voters := []voting_systems.Voter{
+		{Name: "V1", Number: 23, Position: 1.51},
+		{Name: "V2", Number: 23, Position: 4.45},
+		{Name: "V3", Number: 4, Position: 5.45},
 	}
 
-	voters := []Voter{
-		{"X=2", 1, 2},
-		{"X=3", 2, 3},
-		{"X=4", 2, 4},
-		{"X=6", 2, 6},
-	}*/
-	/*optimalCost, _ := determineOptimal(canidates, voters)
-	canidates = round(voters, canidates)
-	//printCanidates(canidates)
-	winnerCost := determineRoundWinner(canidates, totalVoters, voters)
-	//printCanidates(canidates)
-	fmt.Println("The winner cost is ", winnerCost)
+	optimalCost, opt_canidate := voting_systems.DetermineOptimalCanidate(canidates, voters)
+	fmt.Println("The optimal canidate is ", opt_canidate.Name, " ", opt_canidate.Position)
 	fmt.Println("The optimal cost is ", optimalCost)
-	distortion := GetDistortion(winnerCost, optimalCost)
-	fmt.Println("The distortion is ", distortion)
-	//printCanidates(canidates)
-	printVoters(voters)*/
+	winner := voting_systems.InitiateSTV(canidates, totalVoters, voters)
+	fmt.Println("The winner is ", winner.Name, " ", winner.Position)
+	winnerCost := voting_systems.GetSocailCost(winner, voters)
+	fmt.Println("The winner cost is ", winnerCost)
 
 }
