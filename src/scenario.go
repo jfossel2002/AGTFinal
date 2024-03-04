@@ -22,8 +22,10 @@ func RunSpecificInstance() {
 		{Name: "V3", Number: 4, Position: 5.45},
 	}
 
+	//Print the cost for each canidate
+	voting_systems.PrintAllCosts(canidates, voters)
 	optimalCost, opt_canidate := voting_systems.DetermineOptimalCanidate(canidates, voters)
-	fmt.Println("The optimal canidate is ", opt_canidate.Name, " ", opt_canidate.Position)
+	fmt.Println("\nThe optimal canidate is ", opt_canidate.Name, " ", opt_canidate.Position)
 	fmt.Println("The optimal cost is ", optimalCost)
 	winner := voting_systems.InitiateSTV(canidates, totalVoters, voters)
 	fmt.Println("The winner is ", winner.Name, " ", winner.Position)

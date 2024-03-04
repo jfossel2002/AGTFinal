@@ -49,6 +49,12 @@ func DetermineOptimalCanidate(Candidates []Candidate, voters []Voter) (float64, 
 	return minCost, Candidates[canidatePosition]
 }
 
+func PrintAllCosts(Candidates []Candidate, voters []Voter) {
+	for i := 0; i < len(Candidates); i++ {
+		fmt.Println("The cost for ", Candidates[i].Name, " ", Candidates[i].Position, " is ", GetSocailCost(Candidates[i], voters))
+	}
+}
+
 // Prints the voters
 func PrintVoters(voters []Voter) {
 	//Sort voters based on position
