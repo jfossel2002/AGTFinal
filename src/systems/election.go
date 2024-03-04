@@ -34,7 +34,7 @@ func GetSocailCost(c Candidate, voters []Voter) float64 {
 }
 
 // Finds the optimal canidate based on the social cost
-func DetermineOptimalCanidate(Candidates []Candidate, voters []Voter) (float64, int) {
+func DetermineOptimalCanidate(Candidates []Candidate, voters []Voter) (float64, Candidate) {
 	minCost := 1000000.0
 	canidatePosition := 0
 	for j := 0; j < len(Candidates); j++ {
@@ -46,7 +46,13 @@ func DetermineOptimalCanidate(Candidates []Candidate, voters []Voter) (float64, 
 		}
 	}
 	//fmt.Println("The optimal canidate is ", Candidates[canidatePosition].name, " ", Candidates[canidatePosition].position, " with a cost of ", minCost)
-	return minCost, canidatePosition
+	return minCost, Candidates[canidatePosition]
+}
+
+func PrintAllCosts(Candidates []Candidate, voters []Voter) {
+	for i := 0; i < len(Candidates); i++ {
+		fmt.Println("The cost for ", Candidates[i].Name, " ", Candidates[i].Position, " is ", GetSocailCost(Candidates[i], voters))
+	}
 }
 
 // Prints the voters
