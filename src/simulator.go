@@ -1,5 +1,5 @@
 // File to simulate voting data and run the elections
-package main
+package primary
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 func initiateCanidates(numCandidates int, interval float64) []Candidate {
 	var candidates []Candidate
 	for i := 0; i < numCandidates; i++ {
-		candidates = append(candidates, Candidate{name: "Candidate" + string(rune(i)), position: 0.0})
+		candidates = append(candidates, Candidate{Name: "Candidate" + string(rune(i)), Position: 0.0})
 	}
 	return candidates
 }
@@ -21,7 +21,7 @@ func initiateCanidates(numCandidates int, interval float64) []Candidate {
 func distributeCandidates(candidates []Candidate, minPosition float64, maxPosition float64) []Candidate {
 	for i := 0; i < len(candidates); i++ {
 
-		candidates[i].position = math.Round((minPosition+(maxPosition-minPosition)*rand.Float64())*100) / 100
+		candidates[i].Position = math.Round((minPosition+(maxPosition-minPosition)*rand.Float64())*100) / 100
 	}
 	//Return the candidates with their new positions
 	return candidates
@@ -31,7 +31,7 @@ func distributeCandidates(candidates []Candidate, minPosition float64, maxPositi
 func initiateVoters(numVoters int, interval float64) []Voter {
 	var voters []Voter
 	for i := 0; i < numVoters; i++ {
-		voters = append(voters, Voter{name: "Voter" + string(rune(i)), number: 0.0, position: 0.0})
+		voters = append(voters, Voter{Name: "Voter" + string(rune(i)), Number: 0.0, Position: 0.0})
 	}
 	return voters
 }
@@ -43,7 +43,7 @@ func distributeVoters(numVoters int, minPosition float64, maxPosition float64, t
 	numbers := generateRandomNumbers(numVoters, totalVoters)
 
 	for i := 0; i < numVoters; i++ {
-		voters = append(voters, Voter{name: "Voter" + string(rune(i)), number: numbers[i], position: math.Round((minPosition+(maxPosition-minPosition)*rand.Float64())*100) / 100})
+		voters = append(voters, Voter{Name: "Voter" + string(rune(i)), Number: numbers[i], Position: math.Round((minPosition+(maxPosition-minPosition)*rand.Float64())*100) / 100})
 	}
 	return voters
 }
@@ -85,10 +85,10 @@ func runScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		voters := initiateVoters(5, maxPosition)
 		voters = distributeVoters(5, minPosition, maxPosition, totalVoters)
 		//printVoters(voters)
-		optimalCost, _ := determineOptimal(canidates, voters)
-		canidates = round(voters, canidates)
+		optimalCost, _ := DetermineOptimal(canidates, voters)
+		canidates = Round(voters, canidates)
 		//printCanidates(canidates)
-		winnerCost := determineRoundWinner(canidates, totalVoters, voters)
+		winnerCost := DetermineRoundWinner(canidates, totalVoters, voters)
 		//fmt.Println("The winner cost is ", winnerCost)
 		//fmt.Println("The optimal cost is ", optimalCost)
 		distortion := GetDistortion(winnerCost, optimalCost)

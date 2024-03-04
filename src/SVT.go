@@ -1,13 +1,15 @@
-package main
+package primary
 
-import "math"
+import (
+	"math"
+)
 
-func determineRoundWinner(candidates []Candidate, totalVoters int, voters []Voter) float64 {
+func DetermineRoundWinner(candidates []Candidate, totalVoters int, voters []Voter) float64 {
 	cost := -1.0
 	//Base case
 	for i := range candidates {
-		if candidates[i].numVotes > totalVoters/2 {
-			return getSocailCost(candidates[i], voters)
+		if candidates[i].NumVotes > totalVoters/2 {
+			return GetSocailCost(candidates[i], voters)
 		}
 	}
 
@@ -16,8 +18,8 @@ func determineRoundWinner(candidates []Candidate, totalVoters int, voters []Vote
 		minVotes := totalVoters // Assuming totalVoters is higher than any candidate's numVotes can be
 		candidatePosition := 0
 		for j, candidate := range candidates {
-			if candidate.numVotes < minVotes {
-				minVotes = candidate.numVotes
+			if candidate.NumVotes < minVotes {
+				minVotes = candidate.NumVotes
 				candidatePosition = j
 			}
 		}
@@ -27,22 +29,22 @@ func determineRoundWinner(candidates []Candidate, totalVoters int, voters []Vote
 
 		// Redetermine votes based on voters' next preferences
 		//printCanidates(candidates)
-		candidates = round(voters, candidates)
+		candidates = Round(voters, candidates)
 
 		// Recursive call to handle the next round
-		return determineRoundWinner(candidates, totalVoters, voters)
+		return DetermineRoundWinner(candidates, totalVoters, voters)
 	}
 
 	return cost
 }
 
 // Finds the optimal canidate based on the social cost
-func determineOptimal(Candidates []Candidate, voters []Voter) (float64, int) {
+func DetermineOptimal(Candidates []Candidate, voters []Voter) (float64, int) {
 	minCost := 1000000.0
 	canidatePosition := 0
 	for j := 0; j < len(Candidates); j++ {
-		getSocailCost(Candidates[j], voters)
-		distance := getSocailCost(Candidates[j], voters)
+		GetSocailCost(Candidates[j], voters)
+		distance := GetSocailCost(Candidates[j], voters)
 		if distance < minCost {
 			minCost = distance
 			canidatePosition = j
@@ -54,24 +56,24 @@ func determineOptimal(Candidates []Candidate, voters []Voter) (float64, int) {
 }
 
 // Simulates a round by determining the number of votes each canidate gets
-func round(voters []Voter, canidates []Candidate) []Candidate {
+func Round(voters []Voter, canidates []Candidate) []Candidate {
 	//Reset the number of votes for each candidate
 	for i := 0; i < len(canidates); i++ {
-		canidates[i].numVotes = 0
+		canidates[i].NumVotes = 0
 	}
 	//For each voter determine the closest candidate and save it
 	for i := 0; i < len(voters); i++ {
 		minDistance := 10000.0
 		canidatePosition := 0
 		for j := 0; j < len(canidates); j++ {
-			distance := math.Abs(voters[i].position - canidates[j].position)
+			distance := math.Abs(voters[i].Position - canidates[j].Position)
 			if distance < minDistance {
 				minDistance = distance
 				canidatePosition = j
 			}
 		}
 		//add that number of voters to the candidate
-		canidates[canidatePosition].numVotes += voters[i].number
+		canidates[canidatePosition].NumVotes += voters[i].Number
 
 	}
 	return canidates
