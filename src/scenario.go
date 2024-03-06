@@ -18,7 +18,7 @@ func RunSpecificInstance() {
 
 	voters := []voting_systems.Voter{
 		{Name: "V1", Number: 23, Position: 1.51},
-		{Name: "V2", Number: 23, Position: 4.45},
+		{Name: "V2", Number: 24, Position: 4.45},
 		{Name: "V3", Number: 4, Position: 5.45},
 	}
 
@@ -38,5 +38,13 @@ func RunSpecificInstance() {
 	// Copeland count determination here
 	copelandWinner := voting_systems.DetermineCopelandWinner(canidates, voters)
 	fmt.Println("The winner From Copeland is:", copelandWinner.Name, " ", copelandWinner.Position)
+
+	//Plurality count determination here
+	pluralityWinner := voting_systems.InitiatePlurality(canidates, voters)
+	fmt.Println("The winner From Plurality is:", pluralityWinner.Name, " ", pluralityWinner.Position)
+
+	//Plurality Veto determination here
+	pluralityVetoWinner := voting_systems.InitiatePluralityVeto(canidates, voters)
+	fmt.Println("The winner From Plurality Veto is:", pluralityVetoWinner.Name, " ", pluralityVetoWinner.Position)
 
 }
