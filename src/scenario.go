@@ -34,7 +34,9 @@ func RunSpecificInstance() {
 
 	//Add Borda count determination here
 	bordaWinner := voting_systems.CalculateBordaWinner(canidates, voters)
-
-	// Print the winner from Borda Count
 	fmt.Println("The winner From Borda Count is:", bordaWinner.Name, " ", bordaWinner.Position)
+	// Copeland count determination here
+	copelandWinner := voting_systems.DetermineCopelandWinner(canidates, voters)
+	fmt.Println("The winner From Copeland is:", copelandWinner.Name, " ", copelandWinner.Position)
+
 }
