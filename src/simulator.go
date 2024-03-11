@@ -74,7 +74,7 @@ func generateRandomNumbers(x int, y int) []int {
 }
 
 // Runs a given number of scenarios
-func runScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int) {
+func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int) {
 	maxDistortion := 0.0
 	maxDistortionCanidates := []voting_systems.Candidate{}
 	maxDistortionVoters := []voting_systems.Voter{}

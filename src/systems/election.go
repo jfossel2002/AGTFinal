@@ -2,21 +2,25 @@
 package voting_systems
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
+	"os"
 	"sort"
 )
 
 type Candidate struct {
-	Name     string
-	Position float64
-	NumVotes int
+	Name     string  `json:"Name"`
+	Position float64 `json:"Position"`
+	NumVotes int     `json:"NumVotes"`
 }
 
+// Define the Voter struct
 type Voter struct {
-	Name     string
-	Number   int
-	Position float64
+	Name     string  `json:"Name"`
+	Number   int     `json:"Number"`
+	Position float64 `json:"Position"`
 }
 
 // Returns the distortion of the election
@@ -89,4 +93,40 @@ func PrintCanidates(canidates []Candidate) {
 func PrintCanidate(canidate Candidate) {
 	fmt.Println(canidate.Name, " ", canidate.Position)
 	fmt.Println("  Votes ", canidate.NumVotes)
+}
+
+func ReadFromFile(filePath string, dataType string) (interface{}, error) {
+	// Open the JSON file
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	// Read the file content
+	byteValue, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	if dataType == "Candidate" {
+		// If the data type is Candidate, unmarshal into []Candidate
+		var candidates []Candidate
+		err = json.Unmarshal(byteValue, &candidates)
+		if err != nil {
+			return nil, err
+		}
+		return candidates, nil
+	} else if dataType == "Voter" {
+		// If the data type is Voter, unmarshal into []Voter
+		var voters []Voter
+		err = json.Unmarshal(byteValue, &voters)
+		if err != nil {
+			return nil, err
+		}
+		return voters, nil
+	}
+
+	// If an unsupported dataType is provided
+	return nil, fmt.Errorf("unsupported data type")
 }
