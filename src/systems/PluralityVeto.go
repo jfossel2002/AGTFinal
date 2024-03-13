@@ -3,6 +3,10 @@ package voting_systems
 import "math"
 
 func InitiatePluralityVeto(candidates []Candidate, voters []Voter) Candidate {
+	for i := range candidates {
+		candidates[i].NumVotes = 0
+	}
+	candidates = PerformPairwiseComparisons(candidates, voters)
 	_, winner := SimulatePluralityVeto(candidates, voters)
 	return winner
 }

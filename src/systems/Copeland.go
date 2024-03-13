@@ -8,7 +8,7 @@ func VoterPrefers(voter Voter, candidateA, candidateB Candidate) bool {
 	return math.Abs(voter.Position-candidateA.Position) < math.Abs(voter.Position-candidateB.Position)
 }
 
-func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) map[string]int {
+func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) []Candidate {
 	scores := make(map[string]int)
 	// Initialize scores to zero
 	for _, candidate := range candidates {
@@ -24,49 +24,44 @@ func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) map[stri
 			// Count the number of times each candidate wins in pairwise comparisons
 			for _, voter := range voters {
 				if VoterPrefers(voter, candidateA, candidateB) {
-					winsA++
+					winsA += voter.Number
 				} else if VoterPrefers(voter, candidateB, candidateA) {
-					winsB++
+					winsB += voter.Number
 				}
 			}
 
 			// Update scores based on pairwise comparisons
 			if winsA > winsB {
 				scores[candidateA.Name]++
+				candidates[i].NumVotes++
 			} else if winsB > winsA {
 				scores[candidateB.Name]++
+				candidates[j].NumVotes++
 			} else { // Handle ties
 				scores[candidateA.Name]++
 				scores[candidateB.Name]++
+				candidates[i].NumVotes++
+				candidates[j].NumVotes++
 			}
 		}
 	}
 
-	return scores
-}
-
-func CalculateCopelandScore(candidates []Candidate, voters []Voter) map[string]int {
-	// Perform pairwise comparisons
-	scores := PerformPairwiseComparisons(candidates, voters)
-
-	// Convert scores to Copeland scores (subtracting losses)
-	copelandScores := make(map[string]int)
-	for candidateName, score := range scores {
-		copelandScores[candidateName] = score - (len(candidates) - 1 - score)
-	}
-
-	return copelandScores
+	return candidates
 }
 
 func DetermineCopelandWinner(candidates []Candidate, voters []Voter) Candidate {
-	copelandScores := CalculateCopelandScore(candidates, voters)
+	//Reset all candidate scores
+	for i := range candidates {
+		candidates[i].NumVotes = 0
+	}
+	candidates = PerformPairwiseComparisons(candidates, voters)
 
 	// Find candidate with highest Copeland score
 	var winner Candidate
 	maxScore := -1
 	for _, candidate := range candidates {
-		if score, ok := copelandScores[candidate.Name]; ok && score > maxScore {
-			maxScore = score
+		if candidate.NumVotes > maxScore {
+			maxScore = candidate.NumVotes
 			winner = candidate
 		}
 	}
