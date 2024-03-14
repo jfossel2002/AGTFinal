@@ -5,6 +5,10 @@ import (
 )
 
 func InitiateSTV(candidates []Candidate, totalVoters int, voters []Voter) Candidate {
+	for i := range candidates {
+		candidates[i].NumVotes = 0
+	}
+	candidates = PerformPairwiseComparisons(candidates, voters)
 	candidates = Round(voters, candidates)
 	_, winner := SimulateSTV(candidates, totalVoters, voters)
 	return winner
