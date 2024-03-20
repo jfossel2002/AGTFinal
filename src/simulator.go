@@ -74,7 +74,7 @@ func generateRandomNumbers(x int, y int) []int {
 }
 
 // Runs a given number of scenarios
-func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) {
+func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) string {
 	maxSTVDistortion := -1.0
 	maxBordaDistortion := -1.0
 	maxSTVDistortionCanidates := []voting_systems.Candidate{}
@@ -168,6 +168,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The winner is ", winnerSTVCan)
 		voting_systems.PrintCanidates(maxSTVDistortionCanidates)
 		voting_systems.PrintVoters(maxSTVDistortionVoters)
+		return "Max STV Distortion: " + fmt.Sprintf("%f", maxSTVDistortion)
 	}
 	if votingSystem == "Borda Count" || votingSystem == "All" {
 		fmt.Println("\nThe max Borda Count distortion is ", maxBordaDistortion)
@@ -177,6 +178,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The winner is ", winnerBordaCan)
 		voting_systems.PrintCanidates(maxBordaDistortionCanidates)
 		voting_systems.PrintVoters(maxBordaDistortionVoters)
+		return "Max Borda Distortion: " + fmt.Sprintf("%f", maxBordaDistortion)
 	}
 	if votingSystem == "Plurality" || votingSystem == "All" {
 		fmt.Println("\nThe max Plurality distortion is ", maxPluralityDistortion)
@@ -186,6 +188,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The winner is ", winnerPluralityCan)
 		voting_systems.PrintCanidates(maxPluralityDistortionCanidates)
 		voting_systems.PrintVoters(maxPluralityDistortionVoters)
+		return "Max Plurality Distortion: " + fmt.Sprintf("%f", maxPluralityDistortion)
 	}
 	if votingSystem == "Copeland" || votingSystem == "All" {
 		fmt.Println("\nThe max Copeland distortion is ", maxCopelandDistortion)
@@ -195,6 +198,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The winner is ", winnerCopelandCan)
 		voting_systems.PrintCanidates(maxCopelandDistortionCanidates)
 		voting_systems.PrintVoters(maxCopelandDistortionVoters)
+		return "Max Copeland Distortion: " + fmt.Sprintf("%f", maxCopelandDistortion)
 	}
 	if votingSystem == "Plurality Veto" || votingSystem == "All" {
 		fmt.Println("\nThe max Plurality Veto distortion is ", maxPluralityVetoDistortion)
@@ -204,5 +208,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The winner is ", winnerPluralityVetoCan)
 		voting_systems.PrintCanidates(maxPluralityVetoDistortionCanidates)
 		voting_systems.PrintVoters(maxPluralityVetoDistortionVoters)
+		return "Max PLurality Veto Distortion: " + fmt.Sprintf("%f", maxPluralityVetoDistortion)
 	}
+	return "Done"
 }
