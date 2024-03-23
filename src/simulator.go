@@ -99,7 +99,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		//fmt.Println(voters)
 		optimalCost, _ := voting_systems.DetermineOptimalCanidate(canidates, voters)
 		if votingSystem == "STV" || votingSystem == "All" {
-			STVWinner := voting_systems.InitiateSTV(canidates, totalVoters, voters)
+			STVWinner, _ := voting_systems.InitiateSTV(canidates, voters)
 			STVWinnerCost := voting_systems.GetSocailCost(STVWinner, voters)
 			STVDistortion := voting_systems.GetDistortion(STVWinnerCost, optimalCost)
 			if STVDistortion > maxSTVDistortion {
@@ -115,7 +115,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 
 		}
 		if votingSystem == "Borda Count" || votingSystem == "All" {
-			bordaWinner := voting_systems.CalculateBordaWinner(canidates, voters)
+			bordaWinner, _ := voting_systems.CalculateBordaWinner(canidates, voters)
 			bordaWinnerCost := voting_systems.GetSocailCost(bordaWinner, voters)
 			bordaDistortion := voting_systems.GetDistortion(bordaWinnerCost, optimalCost)
 			if bordaDistortion > maxBordaDistortion {
@@ -126,7 +126,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 
 		}
 		if votingSystem == "Plurality" || votingSystem == "All" {
-			pluralityWinner := voting_systems.InitiatePlurality(canidates, voters)
+			pluralityWinner, _ := voting_systems.InitiatePlurality(canidates, voters)
 			pluralityWinnerCost := voting_systems.GetSocailCost(pluralityWinner, voters)
 			pluralityDistortion := voting_systems.GetDistortion(pluralityWinnerCost, optimalCost)
 			if pluralityDistortion > maxPluralityDistortion {
@@ -136,7 +136,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			}
 		}
 		if votingSystem == "Copeland" || votingSystem == "All" {
-			copelandWinner := voting_systems.DetermineCopelandWinner(canidates, voters)
+			copelandWinner, _ := voting_systems.DetermineCopelandWinner(canidates, voters)
 			copelandWinnerCost := voting_systems.GetSocailCost(copelandWinner, voters)
 			copelandDistortion := voting_systems.GetDistortion(copelandWinnerCost, optimalCost)
 			if copelandDistortion > maxCopelandDistortion {
@@ -146,7 +146,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			}
 		}
 		if votingSystem == "Plurality Veto" || votingSystem == "All" {
-			pluralityVetoWinner := voting_systems.InitiatePluralityVeto(canidates, voters)
+			pluralityVetoWinner, _ := voting_systems.InitiatePluralityVeto(canidates, voters)
 			pluralityVetoWinnerCost := voting_systems.GetSocailCost(pluralityVetoWinner, voters)
 			pluralityVetoDistortion := voting_systems.GetDistortion(pluralityVetoWinnerCost, optimalCost)
 			if pluralityVetoDistortion > maxPluralityVetoDistortion {
@@ -164,7 +164,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		fmt.Println("The max STV distortion is ", maxSTVDistortion)
 		_, optSTVCan := voting_systems.DetermineOptimalCanidate(maxSTVDistortionCanidates, maxSTVDistortionVoters)
 		fmt.Println("The optimal STV canidate is ", optSTVCan)
-		winnerSTVCan := voting_systems.InitiateSTV(maxSTVDistortionCanidates, totalVoters, maxSTVDistortionVoters)
+		winnerSTVCan, _ := voting_systems.InitiateSTV(maxSTVDistortionCanidates, maxSTVDistortionVoters)
 		fmt.Println("The winner is ", winnerSTVCan)
 		voting_systems.PrintCanidates(maxSTVDistortionCanidates)
 		voting_systems.PrintVoters(maxSTVDistortionVoters)
@@ -173,7 +173,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	if votingSystem == "Borda Count" || votingSystem == "All" {
 		fmt.Println("\nThe max Borda Count distortion is ", maxBordaDistortion)
 		_, optBordaCan := voting_systems.DetermineOptimalCanidate(maxBordaDistortionCanidates, maxBordaDistortionVoters)
-		winnerBordaCan := voting_systems.CalculateBordaWinner(maxBordaDistortionCanidates, maxBordaDistortionVoters)
+		winnerBordaCan, _ := voting_systems.CalculateBordaWinner(maxBordaDistortionCanidates, maxBordaDistortionVoters)
 		fmt.Println("The optimal canidate is ", optBordaCan)
 		fmt.Println("The winner is ", winnerBordaCan)
 		voting_systems.PrintCanidates(maxBordaDistortionCanidates)
@@ -183,7 +183,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	if votingSystem == "Plurality" || votingSystem == "All" {
 		fmt.Println("\nThe max Plurality distortion is ", maxPluralityDistortion)
 		_, optPluralityCan := voting_systems.DetermineOptimalCanidate(maxPluralityDistortionCanidates, maxPluralityDistortionVoters)
-		winnerPluralityCan := voting_systems.InitiatePlurality(maxPluralityDistortionCanidates, maxPluralityDistortionVoters)
+		winnerPluralityCan, _ := voting_systems.InitiatePlurality(maxPluralityDistortionCanidates, maxPluralityDistortionVoters)
 		fmt.Println("The optimal canidate is ", optPluralityCan)
 		fmt.Println("The winner is ", winnerPluralityCan)
 		voting_systems.PrintCanidates(maxPluralityDistortionCanidates)
@@ -193,7 +193,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	if votingSystem == "Copeland" || votingSystem == "All" {
 		fmt.Println("\nThe max Copeland distortion is ", maxCopelandDistortion)
 		_, optCopelandCan := voting_systems.DetermineOptimalCanidate(maxCopelandDistortionCanidates, maxCopelandDistortionVoters)
-		winnerCopelandCan := voting_systems.DetermineCopelandWinner(maxCopelandDistortionCanidates, maxCopelandDistortionVoters)
+		winnerCopelandCan, _ := voting_systems.DetermineCopelandWinner(maxCopelandDistortionCanidates, maxCopelandDistortionVoters)
 		fmt.Println("The optimal canidate is ", optCopelandCan)
 		fmt.Println("The winner is ", winnerCopelandCan)
 		voting_systems.PrintCanidates(maxCopelandDistortionCanidates)
@@ -203,7 +203,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	if votingSystem == "Plurality Veto" || votingSystem == "All" {
 		fmt.Println("\nThe max Plurality Veto distortion is ", maxPluralityVetoDistortion)
 		_, optPluralityVetoCan := voting_systems.DetermineOptimalCanidate(maxPluralityVetoDistortionCanidates, maxPluralityVetoDistortionVoters)
-		winnerPluralityVetoCan := voting_systems.InitiatePluralityVeto(maxPluralityVetoDistortionCanidates, maxPluralityVetoDistortionVoters)
+		winnerPluralityVetoCan, _ := voting_systems.InitiatePluralityVeto(maxPluralityVetoDistortionCanidates, maxPluralityVetoDistortionVoters)
 		fmt.Println("The optimal canidate is ", optPluralityVetoCan)
 		fmt.Println("The winner is ", winnerPluralityVetoCan)
 		voting_systems.PrintCanidates(maxPluralityVetoDistortionCanidates)

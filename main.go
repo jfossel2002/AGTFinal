@@ -60,15 +60,15 @@ func displayVotingResults(myApp fyne.App) {
 	voters := voterData.([]voting_systems.Voter)
 
 	// Run voting systems and get results
-	optimalCost, _ := voting_systems.DetermineOptimalCanidate(candidates, voters)
-	stvWinner := voting_systems.InitiateSTV(candidates, len(voters), voters)
-	bordaWinner := voting_systems.CalculateBordaWinner(candidates, voters)
-	pluralityWinner := voting_systems.InitiatePlurality(candidates, voters)
-	copelandWinner := voting_systems.DetermineCopelandWinner(candidates, voters)
-	pluralityVetoWinner := voting_systems.InitiatePluralityVeto(candidates, voters)
+	optimalCost, optCanidate := voting_systems.DetermineOptimalCanidate(append([]voting_systems.Candidate(nil), candidates...), voters)
+	stvWinner, stvCanidates := voting_systems.InitiateSTV(append([]voting_systems.Candidate(nil), candidates...), voters)
+	bordaWinner, bordaCanidates := voting_systems.CalculateBordaWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	pluralityWinner, pluralityCanidates := voting_systems.InitiatePlurality(append([]voting_systems.Candidate(nil), candidates...), voters)
+	copelandWinner, copelandCanidates := voting_systems.DetermineCopelandWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	pluralityVetoWinner, vetoCanidates := voting_systems.InitiatePluralityVeto(append([]voting_systems.Candidate(nil), candidates...), voters)
 
 	// Create widgets to display results
-	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Cost: %.2f", optimalCost))
+	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Canidate w/ cost: %s %.2f", optCanidate.Name, optimalCost))
 	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s", stvWinner.Name))
 	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s", bordaWinner.Name))
 	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s", pluralityWinner.Name))
@@ -77,10 +77,34 @@ func displayVotingResults(myApp fyne.App) {
 
 	voterTable := container.NewVScroll(createVoterTable(voters))
 	voterTable.SetMinSize(fyne.NewSize(400, 200))
+
+	options := []string{"Default Candidates", "STV Candidates", "Borda Candidates", "Plurality Candidates", "Copeland Candidates", "Veto Candidates"}
+	candidateArrays := map[string][]voting_systems.Candidate{
+		"Default Candidates":   candidates, // Original array
+		"STV Candidates":       stvCanidates,
+		"Borda Candidates":     bordaCanidates,
+		"Plurality Candidates": pluralityCanidates,
+		"Copeland Candidates":  copelandCanidates,
+		"Veto Candidates":      vetoCanidates,
+	}
+
+	// Initially, display the default candidate table
 	candidateTable := container.NewVScroll(createCandidateTable(candidates))
 	candidateTable.SetMinSize(fyne.NewSize(400, 200))
 
+	// Dropdown selection changed function
+	updateCandidateTable := func(value string) {
+		candidateArray := candidateArrays[value]
+		newTable := container.NewVScroll(createCandidateTable(candidateArray))
+		candidateTable.Content = newTable.Content
+		candidateTable.Refresh()
+	}
+
+	dropdown := widget.NewSelect(options, updateCandidateTable)
+	dropdown.PlaceHolder = "Select Candidate Group"
+
 	content := container.NewVBox(
+		dropdown, // Add the dropdown to the layout
 		optimalCostLabel,
 		stvWinnerLabel,
 		bordaWinnerLabel,
@@ -106,7 +130,7 @@ func displayVotingResults(myApp fyne.App) {
 func createVoterTable(voters []voting_systems.Voter) *widget.Table {
 	table := widget.NewTable(
 		func() (int, int) {
-			return len(voters), 2
+			return len(voters), 3
 		},
 		func() fyne.CanvasObject {
 			return widget.NewLabel("")
@@ -118,6 +142,8 @@ func createVoterTable(voters []voting_systems.Voter) *widget.Table {
 				o.(*widget.Label).SetText(voter.Name)
 			case 1:
 				o.(*widget.Label).SetText(fmt.Sprintf("%.2f", voter.Position))
+			case 2:
+				o.(*widget.Label).SetText(fmt.Sprintf("%d", voter.Number))
 			}
 		},
 	)

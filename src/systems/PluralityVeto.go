@@ -2,16 +2,16 @@ package voting_systems
 
 import "math"
 
-func InitiatePluralityVeto(candidates []Candidate, voters []Voter) Candidate {
+func InitiatePluralityVeto(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
 	candidates = PerformPairwiseComparisons(candidates, voters)
-	_, winner := SimulatePluralityVeto(candidates, voters)
-	return winner
+	_, winner, candidates := SimulatePluralityVeto(candidates, voters)
+	return winner, candidates
 }
 
-func SimulatePluralityVeto(candidates []Candidate, voters []Voter) (float64, Candidate) {
+func SimulatePluralityVeto(candidates []Candidate, voters []Voter) (float64, Candidate, []Candidate) {
 	//Give all votes out
 	candidates = PluralityVote(voters, candidates)
 	//Revoke votes from everyones least Favroite
@@ -19,7 +19,7 @@ func SimulatePluralityVeto(candidates []Candidate, voters []Voter) (float64, Can
 	for CheckCanidateVotes(candidates) {
 		candidates = VetoVote(voters, candidates)
 	}
-	return float64(candidates[0].NumVotes), candidates[0]
+	return float64(candidates[0].NumVotes), candidates[0], candidates
 }
 
 func VetoVote(voters []Voter, candidates []Candidate) []Candidate {
