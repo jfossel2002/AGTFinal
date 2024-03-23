@@ -75,11 +75,11 @@ func displayVotingResults(myApp fyne.App) {
 	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s", copelandWinner.Name))
 	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s", pluralityVetoWinner.Name))
 
-	// Create tables to display voter and candidate positions
-	voterTable := createVoterTable(voters)
-	candidateTable := createCandidateTable(candidates)
+	voterTable := container.NewVScroll(createVoterTable(voters))
+	voterTable.SetMinSize(fyne.NewSize(400, 200))
+	candidateTable := container.NewVScroll(createCandidateTable(candidates))
+	candidateTable.SetMinSize(fyne.NewSize(400, 200))
 
-	// Create a container to hold all the widgets
 	content := container.NewVBox(
 		optimalCostLabel,
 		stvWinnerLabel,
@@ -93,10 +93,10 @@ func displayVotingResults(myApp fyne.App) {
 		candidateTable,
 	)
 
-	// Create a window to hold the content
+	// Create a window to hold the content with a scrollable container if necessary
 	window := myApp.NewWindow("Voting Results")
 	window.Resize(fyne.NewSize(800, 600))
-	window.SetContent(container.New(layout.NewStackLayout(), content))
+	window.SetContent(content)
 
 	// Show the window
 	window.Show()
