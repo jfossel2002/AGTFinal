@@ -22,7 +22,6 @@ func main() {
 	mainWindow.Resize(fyne.NewSize(800, 600))
 
 	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
-	// titleLabel.SetTextSize = 20
 
 	button1 := widget.NewButton("Run Specific Instance", func() {
 		displayVotingResults(myApp)
@@ -31,7 +30,6 @@ func main() {
 	button2 := widget.NewButton("Run Random Simulation", func() {
 		displaySimulatorVotes()
 
-		// Implement this function to display the other page
 	})
 
 	mainWindow.SetContent(container.NewVBox(
@@ -80,7 +78,7 @@ func displayVotingResults(myApp fyne.App) {
 
 	options := []string{"Default Candidates", "STV Candidates", "Borda Candidates", "Plurality Candidates", "Copeland Candidates", "Veto Candidates"}
 	candidateArrays := map[string][]voting_systems.Candidate{
-		"Default Candidates":   candidates, // Original array
+		"Default Candidates":   candidates,
 		"STV Candidates":       stvCanidates,
 		"Borda Candidates":     bordaCanidates,
 		"Plurality Candidates": pluralityCanidates,
@@ -88,19 +86,16 @@ func displayVotingResults(myApp fyne.App) {
 		"Veto Candidates":      vetoCanidates,
 	}
 
-	// Initially, display the default candidate table
 	candidateTable := container.NewVScroll(createCandidateTable(candidates))
 	candidateTable.SetMinSize(fyne.NewSize(400, 200))
 	roundsDropdown := widget.NewSelect([]string{}, nil)
 	roundsDropdown.Hide()
 
-	// Dropdown selection changed function
 	updateCandidateTable := func(value string) {
-		// This variable will capture the current context for use in the roundsDropdown.OnChanged callback
 		var currentSelectionType string
 
 		if value == "STV Candidates" || value == "Veto Candidates" {
-			currentSelectionType = value // Capture the current selection type (STV or Veto)
+			currentSelectionType = value
 
 			var rounds [][]voting_systems.Candidate
 			if value == "STV Candidates" {
@@ -118,12 +113,10 @@ func displayVotingResults(myApp fyne.App) {
 			roundsDropdown.Refresh()
 			roundsDropdown.Show()
 
-			// Now setting the OnChanged handler with the captured currentSelectionType variable
 			roundsDropdown.OnChanged = func(selected string) {
 				var selectedRound int
 				fmt.Sscanf(selected, "Round %d", &selectedRound)
-				selectedRound -= 1 // Adjust for zero-based indexing
-
+				selectedRound -= 1
 				var roundCandidates []voting_systems.Candidate
 				if currentSelectionType == "STV Candidates" {
 					roundCandidates = stvRounds[selectedRound]
@@ -137,12 +130,10 @@ func displayVotingResults(myApp fyne.App) {
 				candidateTable.Refresh()
 			}
 
-			// Ensure the first round is selected by default, if any
 			if len(roundOptions) > 0 {
 				roundsDropdown.SetSelected(roundOptions[0])
 			}
-		} else {
-			// Hide and clear the rounds dropdown for non-STV/Veto selections
+		} else { //No rounds
 			roundsDropdown.Hide()
 			candidateArray := candidateArrays[value]
 			newTable := container.NewVScroll(createCandidateTable(candidateArray))
@@ -167,7 +158,6 @@ func displayVotingResults(myApp fyne.App) {
 		}
 	}
 
-	// Adjust the original dropdown's selection changed function to also manage the rounds dropdown
 	dropdown := widget.NewSelect(options, func(selected string) {
 		if selected == "STV Candidates" {
 			updateRoundsDropdown(selected, stvRounds)
@@ -176,12 +166,12 @@ func displayVotingResults(myApp fyne.App) {
 		} else {
 			roundsDropdown.Hide()
 		}
-		updateCandidateTable(selected) // This needs to be adapted to consider rounds if visible
+		updateCandidateTable(selected)
 	})
 	dropdown.PlaceHolder = "Select Candidate Group"
 
 	content := container.NewVBox(
-		dropdown, // Add the dropdown to the layout
+		dropdown,
 		roundsDropdown,
 		optimalCostLabel,
 		stvWinnerLabel,
@@ -195,12 +185,10 @@ func displayVotingResults(myApp fyne.App) {
 		candidateTable,
 	)
 
-	// Create a window to hold the content with a scrollable container if necessary
 	window := myApp.NewWindow("Voting Results")
 	window.Resize(fyne.NewSize(800, 600))
 	window.SetContent(content)
 
-	// Show the window
 	window.Show()
 }
 
@@ -230,7 +218,7 @@ func createVoterTable(voters []voting_systems.Voter) *widget.Table {
 	return table
 }
 
-// createCandidateTable creates a table widget to display candidate positions and votes
+// createCandidateTable creates a table widget to display candidate positions, votes, and names
 func createCandidateTable(candidates []voting_systems.Candidate) *widget.Table {
 	table := widget.NewTable(
 		func() (int, int) {
@@ -278,7 +266,6 @@ func displaySimulatorVotes() {
 		votingSystemButtons = append(votingSystemButtons, button)
 	}
 
-	// Convert votingSystemButtons to []fyne.CanvasObject
 	var canvasButtons []fyne.CanvasObject
 	for _, button := range votingSystemButtons {
 		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
@@ -299,7 +286,7 @@ func displaySimulatorVotes() {
 		layout.NewSpacer(),
 		container.NewHBox(layout.NewSpacer(), showResultsButton, layout.NewSpacer()),
 		layout.NewSpacer(),
-		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...), // Use GridLayoutWithRows to display multiple rows
+		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
 		resultsLabel,
 		layout.NewSpacer(),
 	))
