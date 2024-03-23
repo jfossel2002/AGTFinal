@@ -1,7 +1,6 @@
 package voting_systems
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -16,10 +15,6 @@ func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate
 	candidates = Round(voters, candidates)
 	CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 	_, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
-	for i := range CanidateRounds {
-		fmt.Println("Round ", i)
-		fmt.Println(CanidateRounds[i])
-	}
 	return winner, candidates, CanidateRounds
 }
 
@@ -36,7 +31,6 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, Canida
 	//Base case
 	for i := range candidates {
 		if candidates[i].NumVotes > totalVoters/2 {
-			fmt.Println("Winner: ", candidates[i])
 			return GetSocailCost(candidates[i], voters), candidates[i], candidates, CanidateRounds
 		}
 	}

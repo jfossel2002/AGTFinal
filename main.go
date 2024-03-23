@@ -4,6 +4,7 @@ package main
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
+	"strconv"
 
 	primary "AGT_Midterm/src"
 	"strings"
@@ -28,7 +29,7 @@ func main() {
 	})
 
 	button2 := widget.NewButton("Run Random Simulation", func() {
-		displaySimulatorVotes()
+		displaySimulatorVotes(myApp)
 
 	})
 
@@ -47,13 +48,13 @@ func displayVotingResults(myApp fyne.App) {
 	// Load candidates and voters from files
 	candidateData, err := voting_systems.ReadFromFile("canidates.json", "Candidate")
 	if err != nil {
-		// Handle error
+		fmt.Println("Error reading candidates file")
 	}
 	candidates := candidateData.([]voting_systems.Candidate)
 
 	voterData, err := voting_systems.ReadFromFile("voters.json", "Voter")
 	if err != nil {
-		// Handle error
+		fmt.Println("Error reading voters file")
 	}
 	voters := voterData.([]voting_systems.Voter)
 
@@ -245,14 +246,48 @@ func createCandidateTable(candidates []voting_systems.Candidate) *widget.Table {
 	return table
 }
 
-func displaySimulatorVotes() {
-	myApp := app.New()
+func displaySimulatorVotes(app fyne.App) {
+	myApp := app
 
 	mainWindow := myApp.NewWindow("Voting Functions")
 	mainWindow.Resize(fyne.NewSize(800, 600))
 
 	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+
+	// Create entry widgets for parameters with default values
+	numRunsEntry := widget.NewEntry()
+	numRunsEntry.SetText("10") // Default value
+	numRunsEntry.SetPlaceHolder("Number of Runs")
+
+	numCandidatesEntry := widget.NewEntry()
+	numCandidatesEntry.SetText("5") // Default value
+	numCandidatesEntry.SetPlaceHolder("Number of Candidates")
+
+	maxPositionEntry := widget.NewEntry()
+	maxPositionEntry.SetText("1.0") // Default value
+	maxPositionEntry.SetPlaceHolder("Max Position")
+
+	minPositionEntry := widget.NewEntry()
+	minPositionEntry.SetText("0.0") // Default value
+	minPositionEntry.SetPlaceHolder("Min Position")
+
+	totalVotersEntry := widget.NewEntry()
+	totalVotersEntry.SetText("100") // Default value
+	totalVotersEntry.SetPlaceHolder("Total Voters")
+
 	resultsLabel := widget.NewLabel("")
+
+	// Function to parse entry inputs and run simulation
+	runSimulation := func(system string) {
+		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
+		numCandidates, _ := strconv.Atoi(numCandidatesEntry.Text)
+		maxPosition, _ := strconv.ParseFloat(maxPositionEntry.Text, 64)
+		minPosition, _ := strconv.ParseFloat(minPositionEntry.Text, 64)
+		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
+
+		result := runAndDisplayResults(numRuns, numCandidates, maxPosition, minPosition, totalVoters, system)
+		resultsLabel.SetText(result)
+	}
 
 	// Create buttons for each voting system
 	votingSystems := []string{"STV", "Borda Count", "Plurality", "Copeland", "Plurality Veto"}
@@ -260,7 +295,7 @@ func displaySimulatorVotes() {
 	for _, system := range votingSystems {
 		button := widget.NewButton(system, func(sys string) func() {
 			return func() {
-				resultsLabel.SetText(runAndDisplayResults(10, 5, 1.0, 0.0, 100, sys))
+				runSimulation(sys)
 			}
 		}(system))
 		votingSystemButtons = append(votingSystemButtons, button)
@@ -271,21 +306,19 @@ func displaySimulatorVotes() {
 		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
 	}
 
-	showResultsButton := widget.NewButton("Show Results", func() {
-		results := runAndDisplayResults(10, 5, 1.0, 0.0, 100, "STV")
-		results += runAndDisplayResults(10, 5, 1.0, 0.0, 100, "Borda Count")
-		results += runAndDisplayResults(10, 5, 1.0, 0.0, 100, "Plurality")
-		results += runAndDisplayResults(10, 5, 1.0, 0.0, 100, "Copeland")
-		results += runAndDisplayResults(10, 5, 1.0, 0.0, 100, "Plurality Veto")
-		resultsLabel.SetText(results)
-	})
+	// Layout for parameter entries
+	paramsContainer := container.NewGridWithColumns(2,
+		widget.NewLabel("Number of Runs:"), numRunsEntry,
+		widget.NewLabel("Number of Candidates:"), numCandidatesEntry,
+		widget.NewLabel("Max Position:"), maxPositionEntry,
+		widget.NewLabel("Min Position:"), minPositionEntry,
+		widget.NewLabel("Total Voters:"), totalVotersEntry,
+	)
 
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
-		layout.NewSpacer(),
-		container.NewHBox(layout.NewSpacer(), showResultsButton, layout.NewSpacer()),
-		layout.NewSpacer(),
+		paramsContainer,
 		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
 		resultsLabel,
 		layout.NewSpacer(),
