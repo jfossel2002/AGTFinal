@@ -12,7 +12,7 @@ func RunSpecificInstance(canidates []voting_systems.Candidate, voters []voting_s
 	optimalCost, opt_canidate := voting_systems.DetermineOptimalCanidate(canidates, voters)
 	fmt.Println("\nThe optimal canidate is ", opt_canidate.Name, " ", opt_canidate.Position)
 	fmt.Println("The optimal cost is ", optimalCost)
-	winner, _ := voting_systems.InitiateSTV(canidates, voters)
+	winner, _, _ := voting_systems.InitiateSTV(canidates, voters)
 	fmt.Println("The winner From STV is ", winner.Name, " ", winner.Position)
 	winnerCost := voting_systems.GetSocailCost(winner, voters)
 	fmt.Println("The winner From STV cost is ", winnerCost)
@@ -29,7 +29,7 @@ func RunSpecificInstance(canidates []voting_systems.Candidate, voters []voting_s
 	fmt.Println("The winner From Plurality is:", pluralityWinner.Name, " ", pluralityWinner.Position)
 
 	//Plurality Veto determination here
-	pluralityVetoWinner, _ := voting_systems.InitiatePluralityVeto(canidates, voters)
+	pluralityVetoWinner, _, _ := voting_systems.InitiatePluralityVeto(canidates, voters)
 	fmt.Println("The winner From Plurality Veto is:", pluralityVetoWinner.Name, " ", pluralityVetoWinner.Position)
 
 }

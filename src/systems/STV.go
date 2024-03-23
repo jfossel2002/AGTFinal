@@ -5,14 +5,22 @@ import (
 	"math"
 )
 
-func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
+func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
+	//Array of rounds of canidate changes
+	CanidateRounds := [][]Candidate{}
+
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
 	totalVoters := countTotalVotes(voters)
 	candidates = Round(voters, candidates)
-	_, winner, candidates := SimulateSTV(candidates, totalVoters, voters)
-	return winner, candidates
+	CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
+	_, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
+	for i := range CanidateRounds {
+		fmt.Println("Round ", i)
+		fmt.Println(CanidateRounds[i])
+	}
+	return winner, candidates, CanidateRounds
 }
 
 func countTotalVotes(voters []Voter) int {
@@ -23,13 +31,13 @@ func countTotalVotes(voters []Voter) int {
 	return totalVotes
 }
 
-func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float64, Candidate, []Candidate) {
+func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	cost := -1.0
 	//Base case
 	for i := range candidates {
 		if candidates[i].NumVotes > totalVoters/2 {
 			fmt.Println("Winner: ", candidates[i])
-			return GetSocailCost(candidates[i], voters), candidates[i], candidates
+			return GetSocailCost(candidates[i], voters), candidates[i], candidates, CanidateRounds
 		}
 	}
 
@@ -46,14 +54,15 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float
 
 		candidates = append(candidates[:candidatePosition], candidates[candidatePosition+1:]...)
 		candidates = Round(voters, candidates)
+		CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 
 		// Adjust recursive call to capture and return the updated candidates slice
-		cost, winner, candidates := SimulateSTV(candidates, totalVoters, voters)
-		return cost, winner, candidates
+		cost, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
+		return cost, winner, candidates, CanidateRounds
 	}
 
 	//Return empty candidate if no winner is found
-	return cost, Candidate{}, candidates
+	return cost, Candidate{}, candidates, CanidateRounds
 }
 
 // Simulates a round by determining the number of votes each canidate gets

@@ -1,25 +1,35 @@
 package voting_systems
 
-import "math"
+import (
+	"math"
+)
 
-func InitiatePluralityVeto(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
+func InitiatePluralityVeto(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
-	candidates = PerformPairwiseComparisons(candidates, voters)
-	_, winner, candidates := SimulatePluralityVeto(candidates, voters)
-	return winner, candidates
+	CanidateRounds := [][]Candidate{}
+	_, winner, candidates, CanidateRounds := SimulatePluralityVeto(candidates, voters, CanidateRounds)
+	/*for i := range CanidateRounds {
+		fmt.Println("Round ", i)
+		fmt.Println(CanidateRounds[i])
+	}*/
+	return winner, candidates, CanidateRounds
 }
 
-func SimulatePluralityVeto(candidates []Candidate, voters []Voter) (float64, Candidate, []Candidate) {
+func SimulatePluralityVeto(candidates []Candidate, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	//Give all votes out
 	candidates = PluralityVote(voters, candidates)
+	CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 	//Revoke votes from everyones least Favroite
 	//Loop while a canidate has more than 0 votes
 	for CheckCanidateVotes(candidates) {
 		candidates = VetoVote(voters, candidates)
+		CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
+		candidates = removeNegativeCanidates(candidates)
 	}
-	return float64(candidates[0].NumVotes), candidates[0], candidates
+
+	return float64(candidates[0].NumVotes), candidates[0], candidates, CanidateRounds
 }
 
 func VetoVote(voters []Voter, candidates []Candidate) []Candidate {
@@ -37,15 +47,21 @@ func VetoVote(voters []Voter, candidates []Candidate) []Candidate {
 		//remove that number of voters from the candidate
 		candidates[candidatePosition].NumVotes -= voters[i].Number
 		//Check if the candidate has negative votes
-		if candidates[candidatePosition].NumVotes <= 0 {
+
+	}
+	return candidates
+}
+
+func removeNegativeCanidates(candidates []Candidate) []Candidate {
+	for i := 0; i < len(candidates); i++ {
+		if candidates[i].NumVotes <= 0 {
 			//Remove Canidate
-			candidates = append(candidates[:candidatePosition], candidates[candidatePosition+1:]...)
+			candidates = append(candidates[:i], candidates[i+1:]...)
 			//Check if there is only one candidate left
 			if len(candidates) == 1 {
 				return candidates
 			}
 		}
-
 	}
 	return candidates
 }
