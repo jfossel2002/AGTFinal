@@ -242,13 +242,13 @@ func saveCanidates(candidates []voting_systems.Candidate, filename string) {
 	// Marshal the candidates slice to JSON
 	file, err := json.MarshalIndent(candidates, "", " ")
 	if err != nil {
-		panic(err) // Handle the error properly in a real scenario
+		panic(err)
 	}
 
 	// Write the file to the specified path
 	err = ioutil.WriteFile(fullPath, file, 0644)
 	if err != nil {
-		panic(err) // Handle the error properly in a real scenario
+		panic(err)
 	}
 }
 
@@ -269,7 +269,6 @@ func saveVoters(voters []voting_systems.Voter, filename string) {
 	// Ensure the directory structure exists
 	err := os.MkdirAll(basePath, 0755)
 	if err != nil {
-		// Handle the error properly in a real scenario
 		panic(err)
 	}
 
@@ -284,14 +283,12 @@ func saveVoters(voters []voting_systems.Voter, filename string) {
 	// Marshal the voters slice to JSON
 	file, err := json.MarshalIndent(voters, "", " ")
 	if err != nil {
-		// Handle the error properly in a real scenario
 		panic(err)
 	}
 
 	// Write the file to the specified path
 	err = ioutil.WriteFile(fullPath, file, 0644)
 	if err != nil {
-		// Handle the error properly in a real scenario
 		panic(err)
 	}
 }

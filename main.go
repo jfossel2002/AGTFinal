@@ -4,6 +4,8 @@ package main
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"path/filepath"
 	"strconv"
 
@@ -26,7 +28,7 @@ func main() {
 	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
 	button1 := widget.NewButton("Run Specific Instance", func() {
-		displayVotingResults(myApp, "problem_candidates.json", "problem_voters.json")
+		selectFiles(myApp)
 	})
 
 	button2 := widget.NewButton("Run Random Simulation", func() {
@@ -43,6 +45,71 @@ func main() {
 	))
 
 	mainWindow.ShowAndRun()
+}
+
+// Function to make a window and has to drop downs to allow the selection of a candidate and voter file
+func selectFiles(myApp fyne.App) {
+	listFiles := func(dirPath string) ([]string, error) {
+		var files []string
+		fileInfo, err := ioutil.ReadDir(dirPath)
+		if err != nil {
+			return nil, err
+		}
+		for _, file := range fileInfo {
+			files = append(files, file.Name())
+		}
+		return files, nil
+	}
+
+	// Get candidate and voter files
+	candidateFiles, err := listFiles("./Jsons/Candidates")
+	if err != nil {
+		log.Fatalf("Failed to list candidate files: %v", err)
+	}
+	voterFiles, err := listFiles("./Jsons/Voters")
+	if err != nil {
+		log.Fatalf("Failed to list voter files: %v", err)
+	}
+
+	candidateDropdown := widget.NewSelect(candidateFiles, nil)
+	voterDropdown := widget.NewSelect(voterFiles, nil)
+	selectedCandidateFilePath := ""
+	selectedVoterFilePath := ""
+
+	candidateDropdown.OnChanged = func(selected string) {
+		selectedCandidateFilePath = filepath.Join("./Jsons/Candidates", selected)
+
+	}
+
+	voterDropdown.OnChanged = func(selected string) {
+		selectedVoterFilePath = filepath.Join("./Jsons/Voters", selected)
+
+	}
+
+	if len(candidateFiles) > 0 {
+		candidateDropdown.SetSelected(candidateFiles[0])
+	}
+	if len(voterFiles) > 0 {
+		voterDropdown.SetSelected(voterFiles[0])
+	}
+
+	//Make new button to submit
+	submitButton := widget.NewButton("Submit", func() {
+		displayVotingResults(myApp, selectedCandidateFilePath, selectedVoterFilePath)
+	})
+	content := container.NewVBox(
+		widget.NewLabel("Select Candidates JSON:"),
+		candidateDropdown,
+		widget.NewLabel("Select Voters JSON:"),
+		voterDropdown,
+		submitButton,
+	)
+
+	window := myApp.NewWindow("Voting Results")
+	window.Resize(fyne.NewSize(800, 600))
+	window.SetContent(content)
+	window.Show()
+
 }
 
 func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName string) {
@@ -309,8 +376,8 @@ func displaySimulatorVotes(app fyne.App) {
 		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
 	}
 	var viewDetailsButton = widget.NewButton("View Details", func() {
-		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName) // Assuming candidateFileName is defined elsewhere
-		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)             // Assuming voterFileName is defined elsewhere
+		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
+		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
 
 		displayVotingResults(myApp, candidateFilePath, voterFilePath)
 	})
