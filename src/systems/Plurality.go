@@ -2,13 +2,13 @@ package voting_systems
 
 import "math"
 
-func InitiatePlurality(candidates []Candidate, voters []Voter) Candidate {
+func InitiatePlurality(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
 	candidates = PerformPairwiseComparisons(candidates, voters)
 	_, winner := SimulatePlurality(candidates, voters)
-	return winner
+	return winner, candidates
 }
 
 func SimulatePlurality(candidates []Candidate, voters []Voter) (float64, Candidate) {

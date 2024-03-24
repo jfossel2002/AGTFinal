@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func CalculateBordaWinner(candidates []Candidate, voters []Voter) Candidate {
+func CalculateBordaWinner(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
@@ -49,5 +49,5 @@ func CalculateBordaWinner(candidates []Candidate, voters []Voter) Candidate {
 		}
 	}
 
-	return winner
+	return winner, candidates
 }

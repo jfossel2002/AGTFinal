@@ -99,6 +99,7 @@ func ReadFromFile(filePath string, dataType string) (interface{}, error) {
 	// Open the JSON file
 	file, err := os.Open(filePath)
 	if err != nil {
+		fmt.Println("Error opening file: ", err)
 		return nil, err
 	}
 	defer file.Close()

@@ -49,7 +49,7 @@ func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) []Candid
 	return candidates
 }
 
-func DetermineCopelandWinner(candidates []Candidate, voters []Voter) Candidate {
+func DetermineCopelandWinner(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	//Reset all candidate scores
 	for i := range candidates {
 		candidates[i].NumVotes = 0
@@ -66,5 +66,5 @@ func DetermineCopelandWinner(candidates []Candidate, voters []Voter) Candidate {
 		}
 	}
 
-	return winner
+	return winner, candidates
 }
