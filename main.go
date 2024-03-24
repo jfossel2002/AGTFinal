@@ -4,6 +4,7 @@ package main
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	primary "AGT_Midterm/src"
@@ -25,7 +26,7 @@ func main() {
 	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
 	button1 := widget.NewButton("Run Specific Instance", func() {
-		displayVotingResults(myApp)
+		displayVotingResults(myApp, "problem_candidates.json", "problem_voters.json")
 	})
 
 	button2 := widget.NewButton("Run Random Simulation", func() {
@@ -44,15 +45,15 @@ func main() {
 	mainWindow.ShowAndRun()
 }
 
-func displayVotingResults(myApp fyne.App) {
+func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName string) {
 	// Load candidates and voters from files
-	candidateData, err := voting_systems.ReadFromFile("canidates.json", "Candidate")
+	candidateData, err := voting_systems.ReadFromFile(candidatesFileName, "Candidate")
 	if err != nil {
 		fmt.Println("Error reading candidates file")
 	}
 	candidates := candidateData.([]voting_systems.Candidate)
 
-	voterData, err := voting_systems.ReadFromFile("voters.json", "Voter")
+	voterData, err := voting_systems.ReadFromFile(votersFileName, "Voter")
 	if err != nil {
 		fmt.Println("Error reading voters file")
 	}
@@ -278,14 +279,16 @@ func displaySimulatorVotes(app fyne.App) {
 	resultsLabel := widget.NewLabel("")
 
 	// Function to parse entry inputs and run simulation
+	candidateFileName, voterFileName := "candidates.json", "voters.json"
 	runSimulation := func(system string) {
 		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
 		numCandidates, _ := strconv.Atoi(numCandidatesEntry.Text)
 		maxPosition, _ := strconv.ParseFloat(maxPositionEntry.Text, 64)
 		minPosition, _ := strconv.ParseFloat(minPositionEntry.Text, 64)
 		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
+		result := ""
 
-		result := runAndDisplayResults(numRuns, numCandidates, maxPosition, minPosition, totalVoters, system)
+		result, candidateFileName, voterFileName = runAndDisplayResults(numRuns, numCandidates, maxPosition, minPosition, totalVoters, system)
 		resultsLabel.SetText(result)
 	}
 
@@ -305,6 +308,12 @@ func displaySimulatorVotes(app fyne.App) {
 	for _, button := range votingSystemButtons {
 		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
 	}
+	var viewDetailsButton = widget.NewButton("View Details", func() {
+		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName) // Assuming candidateFileName is defined elsewhere
+		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)             // Assuming voterFileName is defined elsewhere
+
+		displayVotingResults(myApp, candidateFilePath, voterFilePath)
+	})
 
 	// Layout for parameter entries
 	paramsContainer := container.NewGridWithColumns(2,
@@ -318,6 +327,7 @@ func displaySimulatorVotes(app fyne.App) {
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
+		viewDetailsButton,
 		paramsContainer,
 		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
 		resultsLabel,
@@ -326,21 +336,22 @@ func displaySimulatorVotes(app fyne.App) {
 	mainWindow.Show()
 }
 
-func runAndDisplayResults(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) string {
+func runAndDisplayResults(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
+	candidateFileName, voterFileName := "candidates.json", "voters.json"
 
 	switch votingSystem {
 	case "STV":
-		result = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "STV")
+		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "STV")
 	case "Borda Count":
-		result = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Borda Count")
+		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Borda Count")
 	case "Plurality":
-		result = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality")
+		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality")
 	case "Copeland":
-		result = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Copeland")
+		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Copeland")
 	case "Plurality Veto":
-		result = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality Veto")
+		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality Veto")
 	}
-	return strings.TrimSpace(votingSystem + " Result:\n" + result + "\n\n")
+	return strings.TrimSpace(votingSystem + " Result:\n" + result + "\n\n"), candidateFileName, voterFileName
 
 }
