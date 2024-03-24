@@ -4,22 +4,34 @@ import (
 	"math"
 )
 
-func InitiateSTV(candidates []Candidate, totalVoters int, voters []Voter) Candidate {
+func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
+	//Array of rounds of canidate changes
+	CanidateRounds := [][]Candidate{}
+
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
-	candidates = PerformPairwiseComparisons(candidates, voters)
+	totalVoters := countTotalVotes(voters)
 	candidates = Round(voters, candidates)
-	_, winner := SimulateSTV(candidates, totalVoters, voters)
-	return winner
+	CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
+	_, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
+	return winner, candidates, CanidateRounds
 }
 
-func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float64, Candidate) {
+func countTotalVotes(voters []Voter) int {
+	totalVotes := 0
+	for _, voter := range voters {
+		totalVotes += voter.Number
+	}
+	return totalVotes
+}
+
+func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	cost := -1.0
 	//Base case
 	for i := range candidates {
 		if candidates[i].NumVotes > totalVoters/2 {
-			return GetSocailCost(candidates[i], voters), candidates[i]
+			return GetSocailCost(candidates[i], voters), candidates[i], candidates, CanidateRounds
 		}
 	}
 
@@ -34,18 +46,17 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter) (float
 			}
 		}
 
-		// Remove the candidate with the least votes
 		candidates = append(candidates[:candidatePosition], candidates[candidatePosition+1:]...)
-
-		// Redetermine votes based on voters' next preferences
 		candidates = Round(voters, candidates)
+		CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 
-		// Recursive call to handle the next round
-		return SimulateSTV(candidates, totalVoters, voters)
+		// Adjust recursive call to capture and return the updated candidates slice
+		cost, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
+		return cost, winner, candidates, CanidateRounds
 	}
 
 	//Return empty candidate if no winner is found
-	return cost, Candidate{}
+	return cost, Candidate{}, candidates, CanidateRounds
 }
 
 // Simulates a round by determining the number of votes each canidate gets

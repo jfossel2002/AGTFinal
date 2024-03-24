@@ -3,16 +3,23 @@ package primary
 
 import (
 	voting_systems "AGT_Midterm/src/systems"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"math/rand"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
+	"unicode"
 )
 
 func initiateCanidates(numCandidates int, interval float64) []voting_systems.Candidate {
 	var candidates []voting_systems.Candidate
 	for i := 0; i < numCandidates; i++ {
-		candidates = append(candidates, voting_systems.Candidate{Name: "Candidate" + string(rune(i)), Position: 0.0})
+		candidates = append(candidates, voting_systems.Candidate{Name: "Candidate" + strconv.Itoa(i), Position: 0.0})
 	}
 	return candidates
 }
@@ -20,7 +27,6 @@ func initiateCanidates(numCandidates int, interval float64) []voting_systems.Can
 // Places a given set of canidates onto the interval 0-1 randomly with up to 2 decimal places accuracy
 func distributeCandidates(candidates []voting_systems.Candidate, minPosition float64, maxPosition float64) []voting_systems.Candidate {
 	for i := 0; i < len(candidates); i++ {
-
 		candidates[i].Position = math.Round((minPosition+(maxPosition-minPosition)*rand.Float64())*100) / 100
 	}
 	//Return the candidates with their new positions
@@ -31,7 +37,7 @@ func distributeCandidates(candidates []voting_systems.Candidate, minPosition flo
 func initiateVoters(numVoters int, interval float64) []voting_systems.Voter {
 	var voters []voting_systems.Voter
 	for i := 0; i < numVoters; i++ {
-		voters = append(voters, voting_systems.Voter{Name: "Voter" + string(rune(i)), Number: 0.0, Position: 0.0})
+		voters = append(voters, voting_systems.Voter{Name: "Voter" + strconv.Itoa(i), Number: 0.0, Position: 0.0})
 	}
 	return voters
 }
@@ -74,7 +80,7 @@ func generateRandomNumbers(x int, y int) []int {
 }
 
 // Runs a given number of scenarios
-func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) {
+func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	maxSTVDistortion := -1.0
 	maxBordaDistortion := -1.0
 	maxSTVDistortionCanidates := []voting_systems.Candidate{}
@@ -93,19 +99,27 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	for i := 0; i < numRuns; i++ {
 		canidates := initiateCanidates(numCandidates, maxPosition)
 		canidates = distributeCandidates(canidates, minPosition, maxPosition)
-		//fmt.Println(canidates)
+		canidatesCopy := make([]voting_systems.Candidate, len(canidates))
+		copy(canidatesCopy, canidates)
+		//fmt.Println("COPY ", canidates)
 		voters := initiateVoters(5, maxPosition)
 		voters = distributeVoters(5, minPosition, maxPosition, totalVoters)
 		//fmt.Println(voters)
 		optimalCost, _ := voting_systems.DetermineOptimalCanidate(canidates, voters)
 		if votingSystem == "STV" || votingSystem == "All" {
-			STVWinner := voting_systems.InitiateSTV(canidates, totalVoters, voters)
+			STVWinner, _, _ := voting_systems.InitiateSTV(canidatesCopy, voters)
+			//fmt.Println("The Canidates are ", canidates)
 			STVWinnerCost := voting_systems.GetSocailCost(STVWinner, voters)
 			STVDistortion := voting_systems.GetDistortion(STVWinnerCost, optimalCost)
 			if STVDistortion > maxSTVDistortion {
 				maxSTVDistortion = STVDistortion
-				maxSTVDistortionCanidates = canidates
-				maxSTVDistortionVoters = voters
+				//Copy canidates to maxSTVDistortionCanidates
+				maxSTVDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
+				copy(maxSTVDistortionCanidates, canidates)
+				//Copy voters to maxSTVDistortionVoters
+				maxSTVDistortionVoters = make([]voting_systems.Voter, len(voters))
+				copy(maxSTVDistortionVoters, voters)
+
 			}
 			if STVDistortion > 3 {
 				fmt.Println("The STV distortion is ", STVDistortion)
@@ -115,44 +129,53 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 
 		}
 		if votingSystem == "Borda Count" || votingSystem == "All" {
-			bordaWinner := voting_systems.CalculateBordaWinner(canidates, voters)
+			bordaWinner, _ := voting_systems.CalculateBordaWinner(canidatesCopy, voters)
 			bordaWinnerCost := voting_systems.GetSocailCost(bordaWinner, voters)
 			bordaDistortion := voting_systems.GetDistortion(bordaWinnerCost, optimalCost)
 			if bordaDistortion > maxBordaDistortion {
 				maxBordaDistortion = bordaDistortion
-				maxBordaDistortionCanidates = canidates
-				maxBordaDistortionVoters = voters
+				maxBordaDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
+				copy(maxBordaDistortionCanidates, canidates)
+				maxBordaDistortionVoters = make([]voting_systems.Voter, len(voters))
+				copy(maxBordaDistortionVoters, voters)
+
 			}
 
 		}
 		if votingSystem == "Plurality" || votingSystem == "All" {
-			pluralityWinner := voting_systems.InitiatePlurality(canidates, voters)
+			pluralityWinner, _ := voting_systems.InitiatePlurality(canidatesCopy, voters)
 			pluralityWinnerCost := voting_systems.GetSocailCost(pluralityWinner, voters)
 			pluralityDistortion := voting_systems.GetDistortion(pluralityWinnerCost, optimalCost)
 			if pluralityDistortion > maxPluralityDistortion {
 				maxPluralityDistortion = pluralityDistortion
-				maxPluralityDistortionCanidates = canidates
-				maxPluralityDistortionVoters = voters
+				maxPluralityDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
+				copy(maxPluralityDistortionCanidates, canidates)
+				maxPluralityDistortionVoters = make([]voting_systems.Voter, len(voters))
+				copy(maxPluralityDistortionVoters, voters)
 			}
 		}
 		if votingSystem == "Copeland" || votingSystem == "All" {
-			copelandWinner := voting_systems.DetermineCopelandWinner(canidates, voters)
+			copelandWinner, _ := voting_systems.DetermineCopelandWinner(canidatesCopy, voters)
 			copelandWinnerCost := voting_systems.GetSocailCost(copelandWinner, voters)
 			copelandDistortion := voting_systems.GetDistortion(copelandWinnerCost, optimalCost)
 			if copelandDistortion > maxCopelandDistortion {
 				maxCopelandDistortion = copelandDistortion
-				maxCopelandDistortionCanidates = canidates
-				maxCopelandDistortionVoters = voters
+				maxCopelandDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
+				copy(maxCopelandDistortionCanidates, canidates)
+				maxCopelandDistortionVoters = make([]voting_systems.Voter, len(voters))
+				copy(maxCopelandDistortionVoters, voters)
 			}
 		}
 		if votingSystem == "Plurality Veto" || votingSystem == "All" {
-			pluralityVetoWinner := voting_systems.InitiatePluralityVeto(canidates, voters)
+			pluralityVetoWinner, _, _ := voting_systems.InitiatePluralityVeto(canidatesCopy, voters)
 			pluralityVetoWinnerCost := voting_systems.GetSocailCost(pluralityVetoWinner, voters)
 			pluralityVetoDistortion := voting_systems.GetDistortion(pluralityVetoWinnerCost, optimalCost)
 			if pluralityVetoDistortion > maxPluralityVetoDistortion {
 				maxPluralityVetoDistortion = pluralityVetoDistortion
-				maxPluralityVetoDistortionCanidates = canidates
-				maxPluralityVetoDistortionVoters = voters
+				maxPluralityVetoDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
+				copy(maxPluralityVetoDistortionCanidates, canidates)
+				maxPluralityVetoDistortionVoters = make([]voting_systems.Voter, len(voters))
+				copy(maxPluralityVetoDistortionVoters, voters)
 			}
 		}
 
@@ -161,48 +184,111 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 
 	}
 	if votingSystem == "STV" || votingSystem == "All" {
-		fmt.Println("The max STV distortion is ", maxSTVDistortion)
-		_, optSTVCan := voting_systems.DetermineOptimalCanidate(maxSTVDistortionCanidates, maxSTVDistortionVoters)
-		fmt.Println("The optimal STV canidate is ", optSTVCan)
-		winnerSTVCan := voting_systems.InitiateSTV(maxSTVDistortionCanidates, totalVoters, maxSTVDistortionVoters)
-		fmt.Println("The winner is ", winnerSTVCan)
-		voting_systems.PrintCanidates(maxSTVDistortionCanidates)
-		voting_systems.PrintVoters(maxSTVDistortionVoters)
+		candidateFileName := "STV-Canidates-" + fmt.Sprintf("%.2f", maxSTVDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveCanidates(maxSTVDistortionCanidates, candidateFileName)
+		voterFileName := "STV-Voters-" + fmt.Sprintf("%.2f", maxSTVDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveVoters(maxSTVDistortionVoters, voterFileName)
+		return "Max STV Distortion: " + fmt.Sprintf("%f", maxSTVDistortion), candidateFileName, voterFileName
 	}
 	if votingSystem == "Borda Count" || votingSystem == "All" {
-		fmt.Println("\nThe max Borda Count distortion is ", maxBordaDistortion)
-		_, optBordaCan := voting_systems.DetermineOptimalCanidate(maxBordaDistortionCanidates, maxBordaDistortionVoters)
-		winnerBordaCan := voting_systems.CalculateBordaWinner(maxBordaDistortionCanidates, maxBordaDistortionVoters)
-		fmt.Println("The optimal canidate is ", optBordaCan)
-		fmt.Println("The winner is ", winnerBordaCan)
-		voting_systems.PrintCanidates(maxBordaDistortionCanidates)
-		voting_systems.PrintVoters(maxBordaDistortionVoters)
+		candidateFileName := "Borda-Canidates-" + fmt.Sprintf("%.2f", maxBordaDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveCanidates(maxBordaDistortionCanidates, candidateFileName)
+		voterFileName := "Borda-Voters-" + fmt.Sprintf("%.2f", maxBordaDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveVoters(maxBordaDistortionVoters, voterFileName)
+		return "Max Borda Distortion: " + fmt.Sprintf("%f", maxBordaDistortion), candidateFileName, voterFileName
 	}
 	if votingSystem == "Plurality" || votingSystem == "All" {
-		fmt.Println("\nThe max Plurality distortion is ", maxPluralityDistortion)
-		_, optPluralityCan := voting_systems.DetermineOptimalCanidate(maxPluralityDistortionCanidates, maxPluralityDistortionVoters)
-		winnerPluralityCan := voting_systems.InitiatePlurality(maxPluralityDistortionCanidates, maxPluralityDistortionVoters)
-		fmt.Println("The optimal canidate is ", optPluralityCan)
-		fmt.Println("The winner is ", winnerPluralityCan)
-		voting_systems.PrintCanidates(maxPluralityDistortionCanidates)
-		voting_systems.PrintVoters(maxPluralityDistortionVoters)
+		candidateFileName := "Plurality-Canidates-" + fmt.Sprintf("%.2f", maxPluralityDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveCanidates(maxPluralityDistortionCanidates, candidateFileName)
+		voterFileName := "Plurality-Voters-" + fmt.Sprintf("%.2f", maxPluralityDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveVoters(maxPluralityDistortionVoters, voterFileName)
+		return "Max Plurality Distortion: " + fmt.Sprintf("%f", maxPluralityDistortion), candidateFileName, voterFileName
 	}
 	if votingSystem == "Copeland" || votingSystem == "All" {
-		fmt.Println("\nThe max Copeland distortion is ", maxCopelandDistortion)
-		_, optCopelandCan := voting_systems.DetermineOptimalCanidate(maxCopelandDistortionCanidates, maxCopelandDistortionVoters)
-		winnerCopelandCan := voting_systems.DetermineCopelandWinner(maxCopelandDistortionCanidates, maxCopelandDistortionVoters)
-		fmt.Println("The optimal canidate is ", optCopelandCan)
-		fmt.Println("The winner is ", winnerCopelandCan)
-		voting_systems.PrintCanidates(maxCopelandDistortionCanidates)
-		voting_systems.PrintVoters(maxCopelandDistortionVoters)
+		candidateFileName := "Copeland-Canidates-" + fmt.Sprintf("%.2f", maxCopelandDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveCanidates(maxCopelandDistortionCanidates, candidateFileName)
+		voterFileName := "Copeland-Voters-" + fmt.Sprintf("%.2f", maxCopelandDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveVoters(maxCopelandDistortionVoters, voterFileName)
+		return "Max Copeland Distortion: " + fmt.Sprintf("%f", maxCopelandDistortion), candidateFileName, voterFileName
 	}
 	if votingSystem == "Plurality Veto" || votingSystem == "All" {
-		fmt.Println("\nThe max Plurality Veto distortion is ", maxPluralityVetoDistortion)
-		_, optPluralityVetoCan := voting_systems.DetermineOptimalCanidate(maxPluralityVetoDistortionCanidates, maxPluralityVetoDistortionVoters)
-		winnerPluralityVetoCan := voting_systems.InitiatePluralityVeto(maxPluralityVetoDistortionCanidates, maxPluralityVetoDistortionVoters)
-		fmt.Println("The optimal canidate is ", optPluralityVetoCan)
-		fmt.Println("The winner is ", winnerPluralityVetoCan)
-		voting_systems.PrintCanidates(maxPluralityVetoDistortionCanidates)
-		voting_systems.PrintVoters(maxPluralityVetoDistortionVoters)
+		candidateFileName := "PVeto-Canidates-" + fmt.Sprintf("%.2f", maxPluralityVetoDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveCanidates(maxPluralityVetoDistortionCanidates, candidateFileName)
+		voterFileName := "PVeto-Voters-" + fmt.Sprintf("%.2f", maxPluralityVetoDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
+		saveVoters(maxPluralityVetoDistortionVoters, voterFileName)
+		return "Max PLurality Veto Distortion: " + fmt.Sprintf("%f", maxPluralityVetoDistortion), candidateFileName, voterFileName
+	}
+	return "Done", "", ""
+}
+
+func saveCanidates(candidates []voting_systems.Candidate, filename string) {
+	// Path where the JSON files will be saved
+	basePath := "Jsons/Candidates"
+
+	// Ensure the directory structure exists
+	err := os.MkdirAll(basePath, 0755)
+	if err != nil {
+		panic(err) // Handle the error properly in a real scenario
+	}
+
+	// Sanitize the Name field of each candidate
+	for i := range candidates {
+		candidates[i].Name = SanitizeString(candidates[i].Name)
+	}
+
+	// Combine the base path with the filename to get the full path
+	fullPath := filepath.Join(basePath, filename)
+
+	// Marshal the candidates slice to JSON
+	file, err := json.MarshalIndent(candidates, "", " ")
+	if err != nil {
+		panic(err)
+	}
+
+	// Write the file to the specified path
+	err = ioutil.WriteFile(fullPath, file, 0644)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// SanitizeString removes ASCII control characters from a string
+func SanitizeString(s string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) {
+			return -1 // Drop control characters
+		}
+		return r
+	}, s)
+}
+
+func saveVoters(voters []voting_systems.Voter, filename string) {
+	// Path where the JSON files will be saved
+	basePath := "Jsons/Voters"
+
+	// Ensure the directory structure exists
+	err := os.MkdirAll(basePath, 0755)
+	if err != nil {
+		panic(err)
+	}
+
+	// Sanitize the Name field of each voter
+	for i := range voters {
+		voters[i].Name = SanitizeString(voters[i].Name)
+	}
+
+	// Combine the base path with the filename to get the full path
+	fullPath := filepath.Join(basePath, filename)
+
+	// Marshal the voters slice to JSON
+	file, err := json.MarshalIndent(voters, "", " ")
+	if err != nil {
+		panic(err)
+	}
+
+	// Write the file to the specified path
+	err = ioutil.WriteFile(fullPath, file, 0644)
+	if err != nil {
+		panic(err)
 	}
 }
