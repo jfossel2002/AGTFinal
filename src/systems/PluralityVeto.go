@@ -1,7 +1,15 @@
 package voting_systems
 
+/*
+* The Plurality Veto method is a voting system that determines the winner of an election by selecting the candidate with the most votes
+* and then removing votes from the least preferred candidates until one candidate has more than half of the votes.
+* This file contains the implementation of the Plurality Veto method.
+ */
 import "math"
 
+// Function to calculate the winner of an election using the Plurality Veto method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func InitiatePluralityVeto(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
@@ -15,6 +23,7 @@ func InitiatePluralityVeto(candidates []Candidate, voters []Voter) (Candidate, [
 	return winner, candidates, CanidateRounds
 }
 
+// Function to simulate the Plurality Veto voting system
 func SimulatePluralityVeto(candidates []Candidate, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	//Give all votes out
 	candidates = PluralityVote(voters, candidates)
@@ -28,6 +37,7 @@ func SimulatePluralityVeto(candidates []Candidate, voters []Voter, CanidateRound
 	return float64(candidates[0].NumVotes), candidates[0], candidates, CanidateRounds
 }
 
+// Checks to see if there are any voters with remaining votes
 func checkVotes(voters []Voter) bool {
 	for i := 0; i < len(voters); i++ {
 		if voters[i].Number > 0 {
@@ -37,13 +47,14 @@ func checkVotes(voters []Voter) bool {
 	return false
 }
 
+// Simulates the veto system
+// For each voter determine the furthest candidate and save it
+// While there are votes to be removed from the voters
+// Pick a random voter, find the furthest candidate and remove 1 vote
+// If the candidate has no votes left, remove the candidate
 func VetoVote(voters []Voter, candidates []Candidate, CanidateRounds [][]Candidate) ([]Candidate, [][]Candidate) {
 	votersCopy := make([]Voter, len(voters))
 	copy(votersCopy, voters)
-	//For each voter determine the furthest candidate and save it
-	//While there are votes to be removed from the voters
-	//Pick a random voter, find the furthest candidate and remove 1 vote
-	//If the candidate has no votes left, remove the candidate
 	for checkVotes(votersCopy) {
 		maxDistance := 0.0
 		voterPosition := 0
@@ -65,7 +76,6 @@ func VetoVote(voters []Voter, candidates []Candidate, CanidateRounds [][]Candida
 		}
 		//remove that number of voters from the candidate
 		candidates[candidatePosition].NumVotes -= 1
-		//fmt.Println(candidates)
 		//remove that number of votes from the voter
 		votersCopy[voterPosition].Number -= 1
 		//Check if the candidate has negative votes
@@ -80,7 +90,7 @@ func VetoVote(voters []Voter, candidates []Candidate, CanidateRounds [][]Candida
 	return candidates, CanidateRounds
 }
 
-// Remove the most negative first
+// Removes canidates with <= 0 votes
 func removeNegativeCanidates(candidates []Candidate, CanidateRounds [][]Candidate) ([]Candidate, [][]Candidate) {
 	for i := 0; i < len(candidates); i++ {
 		if candidates[i].NumVotes <= 0 {
@@ -92,6 +102,7 @@ func removeNegativeCanidates(candidates []Candidate, CanidateRounds [][]Candidat
 	return candidates, CanidateRounds
 }
 
+// Checks to see if any candidates have > 0 votes or if there is only one left
 func CheckCanidateVotes(candidates []Candidate) bool {
 	if len(candidates) == 1 {
 		return false

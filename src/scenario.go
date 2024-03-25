@@ -1,11 +1,16 @@
-// File to run a specific scenario
 package primary
 
+/*
+* This file contains the functions for running a speicifc scenario (a specific set of candidates and voters for a voting system)
+ */
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
 )
 
+// RunSpecificInstance runs a specific scenario
+// Takes in a slice of candidates and a slice of voters
+// Prints the optimal candidate, optimal cost, winner from STV, winner from Borda Count, winner from Copeland, winner from Plurality, and winner from Plurality Veto
 func RunSpecificInstance(canidates []voting_systems.Candidate, voters []voting_systems.Voter) {
 	//Print the cost for each canidate
 	voting_systems.PrintAllCosts(canidates, voters)

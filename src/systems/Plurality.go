@@ -1,16 +1,24 @@
 package voting_systems
 
+/*
+* The Plurality method is a voting system that determines the winner of an election by selecting the candidate with the most votes.
+* Each voter selects their preferred candidate, and the candidate with the most votes is declared the winner.
+* This file contains the implementation of the Plurality method.
+ */
 import "math"
 
+// Function to calculate the winner of an election using the Plurality method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func InitiatePlurality(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
-	candidates = PerformPairwiseComparisons(candidates, voters)
 	_, winner := SimulatePlurality(candidates, voters)
 	return winner, candidates
 }
 
+// Function to simulate the Plurality voting system
 func SimulatePlurality(candidates []Candidate, voters []Voter) (float64, Candidate) {
 	candidates = PluralityVote(voters, candidates)
 	//Determine canidate with the most votes

@@ -1,13 +1,25 @@
 package voting_systems
 
+/*
+ * The Copeland method is a voting system that determines the winner of an election by comparing each pair of candidates.
+ * A candidate receives a point for each other candidate they beat in a pairwise comparison.
+ * The candidate with the most points is declared the winner.
+ * This file contains the implementation of the Copeland method.
+ */
 import (
 	"math"
 )
 
+// Function to determine if a voter prefers one candidate over another
+// Takes in a voter and two candidates
+// Returns true if the voter prefers candidateA over candidateB
 func VoterPrefers(voter Voter, candidateA, candidateB Candidate) bool {
 	return math.Abs(voter.Position-candidateA.Position) < math.Abs(voter.Position-candidateB.Position)
 }
 
+// Function to perform pairwise comparisons between candidates
+// Takes in a slice of candidates and a slice of voters
+// Returns a slice of candidates with updated vote counts
 func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) []Candidate {
 	scores := make(map[string]int)
 	// Initialize scores to zero
@@ -49,6 +61,9 @@ func PerformPairwiseComparisons(candidates []Candidate, voters []Voter) []Candid
 	return candidates
 }
 
+// Function to determine the winner of an election using the Copeland method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func DetermineCopelandWinner(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	//Reset all candidate scores
 	for i := range candidates {

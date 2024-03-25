@@ -1,4 +1,7 @@
-// File for join functions for scenarios and simulator, i.e. voting systems?
+/*
+* This file contains the functions to read data from a JSON file, and the functions to calculate the social cost of a candidate, the distortion of the election, and the optimal candidate.
+* Contains helper functions and sutrcutres that are shared accross all voting methods
+ */
 package voting_systems
 
 import (
@@ -10,6 +13,7 @@ import (
 	"sort"
 )
 
+// Define the Candidate struct
 type Candidate struct {
 	Name     string  `json:"Name"`
 	Position float64 `json:"Position"`
@@ -49,10 +53,10 @@ func DetermineOptimalCanidate(Candidates []Candidate, voters []Voter) (float64, 
 			canidatePosition = j
 		}
 	}
-	//fmt.Println("The optimal canidate is ", Candidates[canidatePosition].name, " ", Candidates[canidatePosition].position, " with a cost of ", minCost)
 	return minCost, Candidates[canidatePosition]
 }
 
+// Prints the cost of all canidates
 func PrintAllCosts(Candidates []Candidate, voters []Voter) {
 	for i := 0; i < len(Candidates); i++ {
 		fmt.Println("The cost for ", Candidates[i].Name, " ", Candidates[i].Position, " is ", GetSocailCost(Candidates[i], voters))
@@ -95,6 +99,8 @@ func PrintCanidate(canidate Candidate) {
 	fmt.Println("  Votes ", canidate.NumVotes)
 }
 
+// Function to read data from a JSON file, user specifies the data type (Candidate or Voter)
+// Returns a slice of Candidates or Voters based on the dataType
 func ReadFromFile(filePath string, dataType string) (interface{}, error) {
 	// Open the JSON file
 	file, err := os.Open(filePath)

@@ -1,6 +1,8 @@
-// File to handle main functions
 package main
 
+/*
+* This file contains the main function to run the voting functions GUI
+ */
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
@@ -19,6 +21,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+// Main function to create the main window and call the other needed functions
 func main() {
 	myApp := app.New()
 
@@ -112,6 +115,8 @@ func selectFiles(myApp fyne.App) {
 
 }
 
+// Function to display the results of the voting systems
+// Creates a new window and displays the results in a table along with candidate and voter positions
 func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName string) {
 	// Load candidates and voters from files
 	candidateData, err := voting_systems.ReadFromFile(candidatesFileName, "Candidate")
@@ -314,6 +319,8 @@ func createCandidateTable(candidates []voting_systems.Candidate) *widget.Table {
 	return table
 }
 
+// Function to handle the window for the simulator
+// Creates a window with entry widgets for parameters and buttons to run the simulation
 func displaySimulatorVotes(app fyne.App) {
 	myApp := app
 
@@ -403,6 +410,7 @@ func displaySimulatorVotes(app fyne.App) {
 	mainWindow.Show()
 }
 
+// Function to run a simulation and return the results
 func runAndDisplayResults(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
 	candidateFileName, voterFileName := "candidates.json", "voters.json"
