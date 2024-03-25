@@ -1,6 +1,9 @@
-// File to simulate voting data and run the elections
 package primary
 
+/*
+* This file contains the functions to simulate a scenario (a specific set of candidates and voters for a voting system) and run a given number of scenarios
+* Outputs data on the maximum distortion for a given voting system and saves that set of candidates and voters to a JSON file
+ */
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"encoding/json"
@@ -16,6 +19,7 @@ import (
 	"unicode"
 )
 
+// Initiates a given number of canidates
 func initiateCanidates(numCandidates int, interval float64) []voting_systems.Candidate {
 	var candidates []voting_systems.Candidate
 	for i := 0; i < numCandidates; i++ {
@@ -79,7 +83,7 @@ func generateRandomNumbers(x int, y int) []int {
 	return numbers
 }
 
-// Runs a given number of scenarios
+// Runs a given number of scenarios allowing the user to choose the number of canidates, voters, and the voting system
 func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	maxSTVDistortion := -1.0
 	maxBordaDistortion := -1.0
@@ -101,14 +105,11 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		canidates = distributeCandidates(canidates, minPosition, maxPosition)
 		canidatesCopy := make([]voting_systems.Candidate, len(canidates))
 		copy(canidatesCopy, canidates)
-		//fmt.Println("COPY ", canidates)
 		voters := initiateVoters(5, maxPosition)
 		voters = distributeVoters(5, minPosition, maxPosition, totalVoters)
-		//fmt.Println(voters)
 		optimalCost, _ := voting_systems.DetermineOptimalCanidate(canidates, voters)
 		if votingSystem == "STV" || votingSystem == "All" {
 			STVWinner, _, _ := voting_systems.InitiateSTV(canidatesCopy, voters)
-			//fmt.Println("The Canidates are ", canidates)
 			STVWinnerCost := voting_systems.GetSocailCost(STVWinner, voters)
 			STVDistortion := voting_systems.GetDistortion(STVWinnerCost, optimalCost)
 			if STVDistortion > maxSTVDistortion {
@@ -179,10 +180,8 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			}
 		}
 
-		//fmt.Println("The winner cost is ", winnerCost)
-		//fmt.Println("The optimal cost is ", optimalCost)
-
 	}
+	//Save the data to a file
 	if votingSystem == "STV" || votingSystem == "All" {
 		candidateFileName := "STV-Canidates-" + fmt.Sprintf("%.2f", maxSTVDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxSTVDistortionCanidates, candidateFileName)
@@ -221,6 +220,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	return "Done", "", ""
 }
 
+// Save the canidates to a file
 func saveCanidates(candidates []voting_systems.Candidate, filename string) {
 	// Path where the JSON files will be saved
 	basePath := "Jsons/Candidates"
@@ -262,6 +262,7 @@ func SanitizeString(s string) string {
 	}, s)
 }
 
+// Save the voters to a file
 func saveVoters(voters []voting_systems.Voter, filename string) {
 	// Path where the JSON files will be saved
 	basePath := "Jsons/Voters"

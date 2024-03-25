@@ -1,10 +1,19 @@
 package voting_systems
 
+/*
+ * The Borda Count method is a voting system in which voters rank candidates in order of preference.
+ * Points are awarded to each candidate based on their rank, with the top-ranked candidate receiving the most points.
+ * The candidate with the most points is declared the winner.
+ * This file contains the implementation of the Borda Count method.
+ */
 import (
 	"math"
 	"sort"
 )
 
+// Function to calculate the winner of an election using the Borda Count method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func CalculateBordaWinner(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0

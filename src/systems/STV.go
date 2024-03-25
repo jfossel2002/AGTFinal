@@ -1,9 +1,16 @@
 package voting_systems
 
+/*
+* The Single Transferable Vote (STV) method is a voting system that determines the winner of an election by transferring votes from losing candidates to other candidates based on voter preferences.
+* This file contains the implementation of the Single Transferable Vote (STV) method.
+ */
 import (
 	"math"
 )
 
+// Function to calculate the winner of an election using the Single Transferable Vote (STV) method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
 	//Array of rounds of canidate changes
 	CanidateRounds := [][]Candidate{}
@@ -18,6 +25,7 @@ func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate
 	return winner, candidates, CanidateRounds
 }
 
+// Count the total number of votes in the election
 func countTotalVotes(voters []Voter) int {
 	totalVotes := 0
 	for _, voter := range voters {
@@ -26,6 +34,7 @@ func countTotalVotes(voters []Voter) int {
 	return totalVotes
 }
 
+// Function to simulate the Single Transferable Vote (STV) voting system
 func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	cost := -1.0
 	//Base case
@@ -50,7 +59,7 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, Canida
 		candidates = Round(voters, candidates)
 		CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 
-		// Adjust recursive call to capture and return the updated candidates slice
+		// Recursive call
 		cost, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
 		return cost, winner, candidates, CanidateRounds
 	}
