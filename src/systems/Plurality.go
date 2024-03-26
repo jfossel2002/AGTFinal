@@ -25,9 +25,24 @@ func SimulatePlurality(candidates []Candidate, voters []Voter) (float64, Candida
 	maxVotes := 0
 	canidatePosition := 0
 	for i := 0; i < len(candidates); i++ {
-		if candidates[i].NumVotes > maxVotes {
-			maxVotes = candidates[i].NumVotes
-			canidatePosition = i
+		if candidates[i].NumVotes >= maxVotes {
+			if candidates[i].NumVotes == maxVotes {
+				//If there is a tie, the canidate that results in the highest distortion wins
+				Possible_Winner_Cost := GetSocailCost(candidates[i], voters)
+				Current_Winner_Cost := GetSocailCost(candidates[canidatePosition], voters)
+				opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+				Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+				Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+				if Possbile_Winner_Distortion > Current_Winner_Distortion {
+					canidatePosition = i
+					maxVotes = candidates[i].NumVotes
+
+				}
+			} else {
+
+				maxVotes = candidates[i].NumVotes
+				canidatePosition = i
+			}
 		}
 	}
 	//Return the winner
