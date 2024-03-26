@@ -1,0 +1,17 @@
+[
+    {
+        "Name": "Candidate0",
+        "Position": 0.24,
+        "NumVotes": 0
+    },
+    {
+        "Name": "Candidate1",
+        "Position": 0.25,
+        "NumVotes": 0
+    },
+    {
+        "Name": "Candidate2",
+        "Position": 0.75,
+        "NumVotes": 0
+    }
+]
