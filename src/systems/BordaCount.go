@@ -52,9 +52,23 @@ func CalculateBordaWinner(candidates []Candidate, voters []Voter) (Candidate, []
 	var winner Candidate
 	maxVotes := -1
 	for _, candidate := range candidates {
-		if candidate.NumVotes > maxVotes {
-			maxVotes = candidate.NumVotes
-			winner = candidate
+		if candidate.NumVotes >= maxVotes {
+			if candidate.NumVotes == maxVotes {
+				//If there is a tie, the canidate that results in the highest distortion wins
+				Possible_Winner_Cost := GetSocailCost(candidate, voters)
+				Current_Winner_Cost := GetSocailCost(winner, voters)
+				opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+				Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+				Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+				if Possbile_Winner_Distortion > Current_Winner_Distortion {
+					winner = candidate
+					maxVotes = candidate.NumVotes
+
+				}
+			} else {
+				maxVotes = candidate.NumVotes
+				winner = candidate
+			}
 		}
 	}
 

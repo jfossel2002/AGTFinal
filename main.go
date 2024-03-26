@@ -134,18 +134,28 @@ func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName str
 	// Run voting systems and get results
 	optimalCost, optCanidate := voting_systems.DetermineOptimalCanidate(append([]voting_systems.Candidate(nil), candidates...), voters)
 	stvWinner, stvCanidates, stvRounds := voting_systems.InitiateSTV(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get STVWinner distortion
+	stvWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(stvWinner, voters), optimalCost)
 	bordaWinner, bordaCanidates := voting_systems.CalculateBordaWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get BordaWinner distortion
+	bordaWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(bordaWinner, voters), optimalCost)
 	pluralityWinner, pluralityCanidates := voting_systems.InitiatePlurality(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get PluralityWinner distortion
+	pluralityWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(pluralityWinner, voters), optimalCost)
 	copelandWinner, copelandCanidates := voting_systems.DetermineCopelandWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get CopelandWinner distortion
+	copelandWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(copelandWinner, voters), optimalCost)
 	pluralityVetoWinner, vetoCanidates, vetoRounds := voting_systems.InitiatePluralityVeto(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get PluralityVetoWinner distortion
+	pluralityVetoWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(pluralityVetoWinner, voters), optimalCost)
 
 	// Create widgets to display results
 	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Canidate w/ cost: %s %.2f", optCanidate.Name, optimalCost))
-	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s", stvWinner.Name))
-	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s", bordaWinner.Name))
-	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s", pluralityWinner.Name))
-	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s", copelandWinner.Name))
-	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s", pluralityVetoWinner.Name))
+	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s, distortion: %.2f", stvWinner.Name, stvWinnerDistortion))
+	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s, distortion: %.2f", bordaWinner.Name, bordaWinnerDistortion))
+	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s, distortion: %.2f", pluralityWinner.Name, pluralityWinnerDistortion))
+	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s, distortion: %.2f", copelandWinner.Name, copelandWinnerDistortion))
+	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s, distortion: %.2f", pluralityVetoWinner.Name, pluralityVetoWinnerDistortion))
 
 	voterTable := container.NewVScroll(createVoterTable(voters))
 	voterTable.SetMinSize(fyne.NewSize(400, 200))
