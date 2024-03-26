@@ -75,9 +75,23 @@ func DetermineCopelandWinner(candidates []Candidate, voters []Voter) (Candidate,
 	var winner Candidate
 	maxScore := -1
 	for _, candidate := range candidates {
-		if candidate.NumVotes > maxScore {
-			maxScore = candidate.NumVotes
-			winner = candidate
+		if candidate.NumVotes >= maxScore {
+			if candidate.NumVotes == maxScore {
+				//If there is a tie, the canidate that results in the highest distortion wins
+				Possible_Winner_Cost := GetSocailCost(candidate, voters)
+				Current_Winner_Cost := GetSocailCost(winner, voters)
+				opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+				Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+				Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+				if Possbile_Winner_Distortion > Current_Winner_Distortion {
+					winner = candidate
+					maxScore = candidate.NumVotes
+
+				}
+			} else {
+				maxScore = candidate.NumVotes
+				winner = candidate
+			}
 		}
 	}
 
