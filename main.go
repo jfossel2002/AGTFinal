@@ -122,12 +122,14 @@ func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName str
 	candidateData, err := voting_systems.ReadFromFile(candidatesFileName, "Candidate")
 	if err != nil {
 		fmt.Println("Error reading candidates file")
+		return
 	}
 	candidates := candidateData.([]voting_systems.Candidate)
 
 	voterData, err := voting_systems.ReadFromFile(votersFileName, "Voter")
 	if err != nil {
 		fmt.Println("Error reading voters file")
+		return
 	}
 	voters := voterData.([]voting_systems.Voter)
 
@@ -395,6 +397,7 @@ func displaySimulatorVotes(app fyne.App) {
 	var viewDetailsButton = widget.NewButton("View Details", func() {
 		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
 		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
+		//Add try catch for file not found
 
 		displayVotingResults(myApp, candidateFilePath, voterFilePath)
 	})
