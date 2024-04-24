@@ -1,6 +1,8 @@
-// File to handle main functions
 package main
 
+/*
+* This file contains the main function to run the voting functions GUI
+ */
 import (
 	voting_systems "AGT_Midterm/src/systems"
 	"fmt"
@@ -19,6 +21,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+// Main function to create the main window and call the other needed functions
 func main() {
 	myApp := app.New()
 
@@ -112,35 +115,49 @@ func selectFiles(myApp fyne.App) {
 
 }
 
+// Function to display the results of the voting systems
+// Creates a new window and displays the results in a table along with candidate and voter positions
 func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName string) {
 	// Load candidates and voters from files
 	candidateData, err := voting_systems.ReadFromFile(candidatesFileName, "Candidate")
 	if err != nil {
 		fmt.Println("Error reading candidates file")
+		return
 	}
 	candidates := candidateData.([]voting_systems.Candidate)
 
 	voterData, err := voting_systems.ReadFromFile(votersFileName, "Voter")
 	if err != nil {
 		fmt.Println("Error reading voters file")
+		return
 	}
 	voters := voterData.([]voting_systems.Voter)
 
 	// Run voting systems and get results
 	optimalCost, optCanidate := voting_systems.DetermineOptimalCanidate(append([]voting_systems.Candidate(nil), candidates...), voters)
 	stvWinner, stvCanidates, stvRounds := voting_systems.InitiateSTV(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get STVWinner distortion
+	stvWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(stvWinner, voters), optimalCost)
 	bordaWinner, bordaCanidates := voting_systems.CalculateBordaWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get BordaWinner distortion
+	bordaWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(bordaWinner, voters), optimalCost)
 	pluralityWinner, pluralityCanidates := voting_systems.InitiatePlurality(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get PluralityWinner distortion
+	pluralityWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(pluralityWinner, voters), optimalCost)
 	copelandWinner, copelandCanidates := voting_systems.DetermineCopelandWinner(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get CopelandWinner distortion
+	copelandWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(copelandWinner, voters), optimalCost)
 	pluralityVetoWinner, vetoCanidates, vetoRounds := voting_systems.InitiatePluralityVeto(append([]voting_systems.Candidate(nil), candidates...), voters)
+	//Get PluralityVetoWinner distortion
+	pluralityVetoWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(pluralityVetoWinner, voters), optimalCost)
 
 	// Create widgets to display results
 	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Canidate w/ cost: %s %.2f", optCanidate.Name, optimalCost))
-	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s", stvWinner.Name))
-	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s", bordaWinner.Name))
-	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s", pluralityWinner.Name))
-	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s", copelandWinner.Name))
-	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s", pluralityVetoWinner.Name))
+	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s, distortion: %.2f", stvWinner.Name, stvWinnerDistortion))
+	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s, distortion: %.2f", bordaWinner.Name, bordaWinnerDistortion))
+	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s, distortion: %.2f", pluralityWinner.Name, pluralityWinnerDistortion))
+	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s, distortion: %.2f", copelandWinner.Name, copelandWinnerDistortion))
+	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s, distortion: %.2f", pluralityVetoWinner.Name, pluralityVetoWinnerDistortion))
 
 	voterTable := container.NewVScroll(createVoterTable(voters))
 	voterTable.SetMinSize(fyne.NewSize(400, 200))
@@ -314,6 +331,8 @@ func createCandidateTable(candidates []voting_systems.Candidate) *widget.Table {
 	return table
 }
 
+// Function to handle the window for the simulator
+// Creates a window with entry widgets for parameters and buttons to run the simulation
 func displaySimulatorVotes(app fyne.App) {
 	myApp := app
 
@@ -378,6 +397,7 @@ func displaySimulatorVotes(app fyne.App) {
 	var viewDetailsButton = widget.NewButton("View Details", func() {
 		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
 		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
+		//Add try catch for file not found
 
 		displayVotingResults(myApp, candidateFilePath, voterFilePath)
 	})
@@ -403,6 +423,7 @@ func displaySimulatorVotes(app fyne.App) {
 	mainWindow.Show()
 }
 
+// Function to run a simulation and return the results
 func runAndDisplayResults(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
 	candidateFileName, voterFileName := "candidates.json", "voters.json"

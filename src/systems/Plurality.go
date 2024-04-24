@@ -1,25 +1,48 @@
 package voting_systems
 
+/*
+* The Plurality method is a voting system that determines the winner of an election by selecting the candidate with the most votes.
+* Each voter selects their preferred candidate, and the candidate with the most votes is declared the winner.
+* This file contains the implementation of the Plurality method.
+ */
 import "math"
 
+// Function to calculate the winner of an election using the Plurality method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func InitiatePlurality(candidates []Candidate, voters []Voter) (Candidate, []Candidate) {
 	for i := range candidates {
 		candidates[i].NumVotes = 0
 	}
-	candidates = PerformPairwiseComparisons(candidates, voters)
 	_, winner := SimulatePlurality(candidates, voters)
 	return winner, candidates
 }
 
+// Function to simulate the Plurality voting system
 func SimulatePlurality(candidates []Candidate, voters []Voter) (float64, Candidate) {
 	candidates = PluralityVote(voters, candidates)
 	//Determine canidate with the most votes
 	maxVotes := 0
 	canidatePosition := 0
 	for i := 0; i < len(candidates); i++ {
-		if candidates[i].NumVotes > maxVotes {
-			maxVotes = candidates[i].NumVotes
-			canidatePosition = i
+		if candidates[i].NumVotes >= maxVotes {
+			if candidates[i].NumVotes == maxVotes {
+				//If there is a tie, the canidate that results in the highest distortion wins
+				Possible_Winner_Cost := GetSocailCost(candidates[i], voters)
+				Current_Winner_Cost := GetSocailCost(candidates[canidatePosition], voters)
+				opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+				Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+				Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+				if Possbile_Winner_Distortion > Current_Winner_Distortion {
+					canidatePosition = i
+					maxVotes = candidates[i].NumVotes
+
+				}
+			} else {
+
+				maxVotes = candidates[i].NumVotes
+				canidatePosition = i
+			}
 		}
 	}
 	//Return the winner

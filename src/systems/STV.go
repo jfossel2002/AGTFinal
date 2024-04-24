@@ -1,9 +1,16 @@
 package voting_systems
 
+/*
+* The Single Transferable Vote (STV) method is a voting system that determines the winner of an election by transferring votes from losing candidates to other candidates based on voter preferences.
+* This file contains the implementation of the Single Transferable Vote (STV) method.
+ */
 import (
 	"math"
 )
 
+// Function to calculate the winner of an election using the Single Transferable Vote (STV) method
+// Takes in a slice of candidates and a slice of voters
+// Returns the winning candidate and a slice of all candidates with their vote counts
 func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate, [][]Candidate) {
 	//Array of rounds of canidate changes
 	CanidateRounds := [][]Candidate{}
@@ -18,6 +25,7 @@ func InitiateSTV(candidates []Candidate, voters []Voter) (Candidate, []Candidate
 	return winner, candidates, CanidateRounds
 }
 
+// Count the total number of votes in the election
 func countTotalVotes(voters []Voter) int {
 	totalVotes := 0
 	for _, voter := range voters {
@@ -26,6 +34,7 @@ func countTotalVotes(voters []Voter) int {
 	return totalVotes
 }
 
+// Function to simulate the Single Transferable Vote (STV) voting system
 func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, CanidateRounds [][]Candidate) (float64, Candidate, []Candidate, [][]Candidate) {
 	cost := -1.0
 	//Base case
@@ -40,9 +49,26 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, Canida
 		minVotes := totalVoters // Assuming totalVoters is higher than any candidate's numVotes can be
 		candidatePosition := 0
 		for j, candidate := range candidates {
-			if candidate.NumVotes < minVotes {
-				minVotes = candidate.NumVotes
-				candidatePosition = j
+			if candidate.NumVotes <= minVotes {
+				// If there is a tie, elimate candidate with the lower distortion
+				if candidate.NumVotes == minVotes {
+					//	fmt.Println("Tie")
+					Possible_Winner_Cost := GetSocailCost(candidate, voters)
+					Current_Winner_Cost := GetSocailCost(candidates[candidatePosition], voters)
+					opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+					Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+					Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+					//	fmt.Println("Possible_Winner_Distortion: ", Possbile_Winner_Distortion)
+					//	fmt.Println("Current_Winner_Distortion: ", Current_Winner_Distortion)
+					if Possbile_Winner_Distortion < Current_Winner_Distortion {
+						//	fmt.Println("Eliminating Candidate: ", candidates[candidatePosition].Name)
+						minVotes = candidate.NumVotes
+						candidatePosition = j
+					}
+				} else {
+					minVotes = candidate.NumVotes
+					candidatePosition = j
+				}
 			}
 		}
 
@@ -50,7 +76,7 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, Canida
 		candidates = Round(voters, candidates)
 		CanidateRounds = append(CanidateRounds, append([]Candidate(nil), candidates...))
 
-		// Adjust recursive call to capture and return the updated candidates slice
+		// Recursive call
 		cost, winner, candidates, CanidateRounds := SimulateSTV(candidates, totalVoters, voters, CanidateRounds)
 		return cost, winner, candidates, CanidateRounds
 	}
