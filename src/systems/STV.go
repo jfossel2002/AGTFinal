@@ -49,9 +49,26 @@ func SimulateSTV(candidates []Candidate, totalVoters int, voters []Voter, Canida
 		minVotes := totalVoters // Assuming totalVoters is higher than any candidate's numVotes can be
 		candidatePosition := 0
 		for j, candidate := range candidates {
-			if candidate.NumVotes < minVotes {
-				minVotes = candidate.NumVotes
-				candidatePosition = j
+			if candidate.NumVotes <= minVotes {
+				// If there is a tie, elimate candidate with the lower distortion
+				if candidate.NumVotes == minVotes {
+					//	fmt.Println("Tie")
+					Possible_Winner_Cost := GetSocailCost(candidate, voters)
+					Current_Winner_Cost := GetSocailCost(candidates[candidatePosition], voters)
+					opt_cost, _ := DetermineOptimalCanidate(candidates, voters)
+					Possbile_Winner_Distortion := GetDistortion(Possible_Winner_Cost, opt_cost)
+					Current_Winner_Distortion := GetDistortion(Current_Winner_Cost, opt_cost)
+					//	fmt.Println("Possible_Winner_Distortion: ", Possbile_Winner_Distortion)
+					//	fmt.Println("Current_Winner_Distortion: ", Current_Winner_Distortion)
+					if Possbile_Winner_Distortion < Current_Winner_Distortion {
+						//	fmt.Println("Eliminating Candidate: ", candidates[candidatePosition].Name)
+						minVotes = candidate.NumVotes
+						candidatePosition = j
+					}
+				} else {
+					minVotes = candidate.NumVotes
+					candidatePosition = j
+				}
 			}
 		}
 
