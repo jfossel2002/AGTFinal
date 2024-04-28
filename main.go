@@ -570,18 +570,19 @@ func multiSimulation(app fyne.App) {
 func multiSimResults(minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
 	multiResults := make(map[primary.MultiInput]primary.MultiOutput)
+	fileName := ""
 
 	switch votingSystem {
 	case "STV":
-		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "STV")
+		multiResults, fileName = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "STV")
 	case "Borda Count":
-		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Borda Count")
+		multiResults, fileName = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Borda Count")
 	case "Plurality":
-		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality")
+		multiResults, fileName = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality")
 	case "Copeland":
-		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Copeland")
+		multiResults, fileName = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Copeland")
 	case "Plurality Veto":
-		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality Veto")
+		multiResults, fileName = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality Veto")
 	}
 	for key, value := range multiResults {
 		result += fmt.Sprintf("Number of Candidates: %d, Number of Voters: %d\n", key.NumCandidates, key.NumVoters)
@@ -589,6 +590,7 @@ func multiSimResults(minCandidates int, maxCandidates int, minVoters int, maxVot
 		result += fmt.Sprintf("Max Distortion: %.2f, Average Distortion: %.2f\n\n", value.MaxDistortion, value.AverageDistortion)
 	}
 	fmt.Println(result)
+	primary.ReadAndGraphMultiResults(fileName)
 	return strings.TrimSpace(result), "candidates.json", "voters.json"
 
 }
