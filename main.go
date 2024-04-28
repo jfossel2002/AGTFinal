@@ -39,11 +39,15 @@ func main() {
 
 	})
 
+	button3 := widget.NewButton("Run Multi Simulation", func() {
+		multiSimulation(myApp)
+	})
+
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
 		layout.NewSpacer(),
-		container.NewHBox(layout.NewSpacer(), button1, button2, layout.NewSpacer()),
+		container.NewHBox(layout.NewSpacer(), button1, button2, button3, layout.NewSpacer()),
 		layout.NewSpacer(),
 	))
 
@@ -350,6 +354,10 @@ func displaySimulatorVotes(app fyne.App) {
 	numCandidatesEntry.SetText("5") // Default value
 	numCandidatesEntry.SetPlaceHolder("Number of Candidates")
 
+	numVoterssEntry := widget.NewEntry()
+	numVoterssEntry.SetText("5") // Default value
+	numVoterssEntry.SetPlaceHolder("Number of Voters")
+
 	maxPositionEntry := widget.NewEntry()
 	maxPositionEntry.SetText("1.0") // Default value
 	maxPositionEntry.SetPlaceHolder("Max Position")
@@ -369,12 +377,13 @@ func displaySimulatorVotes(app fyne.App) {
 	runSimulation := func(system string) {
 		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
 		numCandidates, _ := strconv.Atoi(numCandidatesEntry.Text)
+		nunVoters, _ := strconv.Atoi(numVoterssEntry.Text)
 		maxPosition, _ := strconv.ParseFloat(maxPositionEntry.Text, 64)
 		minPosition, _ := strconv.ParseFloat(minPositionEntry.Text, 64)
 		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
 		result := ""
 
-		result, candidateFileName, voterFileName = runAndDisplayResults(numRuns, numCandidates, maxPosition, minPosition, totalVoters, system)
+		result, candidateFileName, voterFileName = runAndDisplayResults(numRuns, numCandidates, nunVoters, maxPosition, minPosition, totalVoters, system)
 		resultsLabel.SetText(result)
 	}
 
@@ -406,6 +415,7 @@ func displaySimulatorVotes(app fyne.App) {
 	paramsContainer := container.NewGridWithColumns(2,
 		widget.NewLabel("Number of Runs:"), numRunsEntry,
 		widget.NewLabel("Number of Candidates:"), numCandidatesEntry,
+		widget.NewLabel("Number of Voters:"), numVoterssEntry,
 		widget.NewLabel("Max Position:"), maxPositionEntry,
 		widget.NewLabel("Min Position:"), minPositionEntry,
 		widget.NewLabel("Total Voters:"), totalVotersEntry,
@@ -424,22 +434,161 @@ func displaySimulatorVotes(app fyne.App) {
 }
 
 // Function to run a simulation and return the results
-func runAndDisplayResults(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
+func runAndDisplayResults(numRuns int, numCandidates int, numVoters int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
 	candidateFileName, voterFileName := "candidates.json", "voters.json"
+	var maxDistortion float64
+	var averageDistortion float64
 
 	switch votingSystem {
 	case "STV":
-		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "STV")
+		result, candidateFileName, voterFileName, maxDistortion, averageDistortion = primary.RunScenario(numRuns, numCandidates, numVoters, maxPosition, minPosition, totalVoters, "STV")
 	case "Borda Count":
-		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Borda Count")
+		result, candidateFileName, voterFileName, maxDistortion, averageDistortion = primary.RunScenario(numRuns, numCandidates, numVoters, maxPosition, minPosition, totalVoters, "Borda Count")
 	case "Plurality":
-		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality")
+		result, candidateFileName, voterFileName, maxDistortion, averageDistortion = primary.RunScenario(numRuns, numCandidates, numVoters, maxPosition, minPosition, totalVoters, "Plurality")
 	case "Copeland":
-		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Copeland")
+		result, candidateFileName, voterFileName, maxDistortion, averageDistortion = primary.RunScenario(numRuns, numCandidates, numVoters, maxPosition, minPosition, totalVoters, "Copeland")
 	case "Plurality Veto":
-		result, candidateFileName, voterFileName = primary.RunScenario(numRuns, numCandidates, maxPosition, minPosition, totalVoters, "Plurality Veto")
+		result, candidateFileName, voterFileName, maxDistortion, averageDistortion = primary.RunScenario(numRuns, numCandidates, numVoters, maxPosition, minPosition, totalVoters, "Plurality Veto")
 	}
-	return strings.TrimSpace(votingSystem + " Result:\n" + result + "\n\n"), candidateFileName, voterFileName
+	fmt.Println("Max Distortion: ", maxDistortion)
+	fmt.Println("Average Distortion: ", averageDistortion)
+	return strings.TrimSpace(votingSystem + " Result:\n" + result + "\nAverage Distortion: " + strconv.FormatFloat(averageDistortion, 'f', -1, 64) + "\n\n"), candidateFileName, voterFileName
+
+}
+
+func multiSimulation(app fyne.App) {
+	myApp := app
+
+	mainWindow := myApp.NewWindow("Voting Functions")
+	mainWindow.Resize(fyne.NewSize(800, 600))
+
+	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+
+	// Create entry widgets for parameters with default values
+	numRunsEntry := widget.NewEntry()
+	numRunsEntry.SetText("10") // Default value
+	numRunsEntry.SetPlaceHolder("Number of Runs")
+
+	minNumCandidatesEntry := widget.NewEntry()
+	minNumCandidatesEntry.SetText("1") // Default value
+	minNumCandidatesEntry.SetPlaceHolder("Min Number of Candidates")
+
+	maxNumCandidatesEntry := widget.NewEntry()
+	maxNumCandidatesEntry.SetText("5") // Default value
+	maxNumCandidatesEntry.SetPlaceHolder("Max Number of Candidates")
+
+	minNumVoterssEntry := widget.NewEntry()
+	minNumVoterssEntry.SetText("1") // Default value
+	minNumVoterssEntry.SetPlaceHolder("Min Number of Voters")
+
+	maxNumVoterssEntry := widget.NewEntry()
+	maxNumVoterssEntry.SetText("5") // Default value
+	maxNumVoterssEntry.SetPlaceHolder("Max Number of Voters")
+
+	maxPositionEntry := widget.NewEntry()
+	maxPositionEntry.SetText("1.0") // Default value
+	maxPositionEntry.SetPlaceHolder("Max Position")
+
+	minPositionEntry := widget.NewEntry()
+	minPositionEntry.SetText("0.0") // Default value
+	minPositionEntry.SetPlaceHolder("Min Position")
+
+	totalVotersEntry := widget.NewEntry()
+	totalVotersEntry.SetText("100") // Default value
+	totalVotersEntry.SetPlaceHolder("Total Voters")
+
+	resultsLabel := widget.NewLabel("")
+
+	// Function to parse entry inputs and run simulation
+	candidateFileName, voterFileName := "candidates.json", "voters.json"
+	runSimulation := func(system string) {
+		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
+		minNumCandidates, _ := strconv.Atoi(minNumCandidatesEntry.Text)
+		maxNumCandidates, _ := strconv.Atoi(maxNumCandidatesEntry.Text)
+		minNumVoters, _ := strconv.Atoi(minNumVoterssEntry.Text)
+		maxNumVoters, _ := strconv.Atoi(maxNumVoterssEntry.Text)
+		maxPosition, _ := strconv.ParseFloat(maxPositionEntry.Text, 64)
+		minPosition, _ := strconv.ParseFloat(minPositionEntry.Text, 64)
+		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
+		result := ""
+
+		result, candidateFileName, voterFileName = multiSimResults(minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
+		resultsLabel.SetText(result)
+	}
+
+	// Create buttons for each voting system
+	votingSystems := []string{"STV", "Borda Count", "Plurality", "Copeland", "Plurality Veto"}
+	var votingSystemButtons []*widget.Button
+	for _, system := range votingSystems {
+		button := widget.NewButton(system, func(sys string) func() {
+			return func() {
+				runSimulation(sys)
+			}
+		}(system))
+		votingSystemButtons = append(votingSystemButtons, button)
+	}
+
+	var canvasButtons []fyne.CanvasObject
+	for _, button := range votingSystemButtons {
+		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
+	}
+	var viewDetailsButton = widget.NewButton("View Details", func() {
+		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
+		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
+		//Add try catch for file not found
+
+		displayVotingResults(myApp, candidateFilePath, voterFilePath)
+	})
+
+	// Layout for parameter entries
+	paramsContainer := container.NewGridWithColumns(2,
+		widget.NewLabel("Number of Runs:"), numRunsEntry,
+		widget.NewLabel("Min Number of Candidates:"), minNumCandidatesEntry,
+		widget.NewLabel("Max Number of Candidates:"), maxNumCandidatesEntry,
+		widget.NewLabel("Min Number of Voters:"), minNumVoterssEntry,
+		widget.NewLabel("Max Number of Voters:"), maxNumVoterssEntry,
+		widget.NewLabel("Max Position:"), maxPositionEntry,
+		widget.NewLabel("Min Position:"), minPositionEntry,
+		widget.NewLabel("Total Voters:"), totalVotersEntry,
+	)
+
+	mainWindow.SetContent(container.NewVBox(
+		layout.NewSpacer(),
+		titleLabel,
+		viewDetailsButton,
+		paramsContainer,
+		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
+		resultsLabel,
+		layout.NewSpacer(),
+	))
+	mainWindow.Show()
+
+}
+
+func multiSimResults(minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
+	result := ""
+	multiResults := make(map[primary.MultiInput]primary.MultiOutput)
+
+	switch votingSystem {
+	case "STV":
+		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "STV")
+	case "Borda Count":
+		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Borda Count")
+	case "Plurality":
+		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality")
+	case "Copeland":
+		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Copeland")
+	case "Plurality Veto":
+		multiResults = primary.Multi_sim(minCandidates, maxCandidates, minVoters, maxVoters, numRuns, maxPosition, minPosition, totalVoters, "Plurality Veto")
+	}
+	for key, value := range multiResults {
+		result += fmt.Sprintf("Number of Candidates: %d, Number of Voters: %d\n", key.NumCandidates, key.NumVoters)
+		result += value.Result + "\n"
+		result += fmt.Sprintf("Max Distortion: %.2f, Average Distortion: %.2f\n\n", value.MaxDistortion, value.AverageDistortion)
+	}
+	fmt.Println(result)
+	return strings.TrimSpace(result), "candidates.json", "voters.json"
 
 }
