@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"runtime"
 	"strconv"
 
 	primary "AGT_Midterm/src"
@@ -23,6 +24,8 @@ import (
 
 // Main function to create the main window and call the other needed functions
 func main() {
+	runtime.LockOSThread() // Ensure we're locking to the OS main thread
+
 	myApp := app.New()
 
 	mainWindow := myApp.NewWindow("Voting Functions")
@@ -462,7 +465,7 @@ func multiSimulation(app fyne.App) {
 	myApp := app
 
 	mainWindow := myApp.NewWindow("Voting Functions")
-	mainWindow.Resize(fyne.NewSize(800, 600))
+	mainWindow.Resize(fyne.NewSize(800, 800))
 
 	titleLabel := widget.NewLabelWithStyle("Voting Functions", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
@@ -499,10 +502,13 @@ func multiSimulation(app fyne.App) {
 	totalVotersEntry.SetText("100") // Default value
 	totalVotersEntry.SetPlaceHolder("Total Voters")
 
-	resultsLabel := widget.NewLabel("")
+	resultsLabel := widget.NewMultiLineEntry()
+	resultsLabel.Wrapping = fyne.TextWrapWord
+	//resultsLabel.Disable()
+	scrollContainer := container.NewScroll(resultsLabel)
+	scrollContainer.SetMinSize(fyne.NewSize(200, 200))
 
 	// Function to parse entry inputs and run simulation
-	candidateFileName, voterFileName := "candidates.json", "voters.json"
 	runSimulation := func(system string) {
 		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
 		minNumCandidates, _ := strconv.Atoi(minNumCandidatesEntry.Text)
@@ -514,7 +520,7 @@ func multiSimulation(app fyne.App) {
 		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
 		result := ""
 
-		result, candidateFileName, voterFileName = multiSimResults(minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
+		result, _, _ = multiSimResults(app, minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
 		resultsLabel.SetText(result)
 	}
 
@@ -534,13 +540,6 @@ func multiSimulation(app fyne.App) {
 	for _, button := range votingSystemButtons {
 		canvasButtons = append(canvasButtons, fyne.CanvasObject(button))
 	}
-	var viewDetailsButton = widget.NewButton("View Details", func() {
-		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
-		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
-		//Add try catch for file not found
-
-		displayVotingResults(myApp, candidateFilePath, voterFilePath)
-	})
 
 	// Layout for parameter entries
 	paramsContainer := container.NewGridWithColumns(2,
@@ -557,17 +556,16 @@ func multiSimulation(app fyne.App) {
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
-		viewDetailsButton,
 		paramsContainer,
 		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
-		resultsLabel,
+		scrollContainer,
 		layout.NewSpacer(),
 	))
 	mainWindow.Show()
 
 }
 
-func multiSimResults(minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
+func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
 	result := ""
 	multiResults := make(map[primary.MultiInput]primary.MultiOutput)
 	fileName := ""
@@ -589,8 +587,62 @@ func multiSimResults(minCandidates int, maxCandidates int, minVoters int, maxVot
 		result += value.Result + "\n"
 		result += fmt.Sprintf("Max Distortion: %.2f, Average Distortion: %.2f\n\n", value.MaxDistortion, value.AverageDistortion)
 	}
-	fmt.Println(result)
-	primary.ReadAndGraphMultiResults(fileName)
+	//fmt.Println(result)
+	DisplayGraphs(app, fileName, true, true)
 	return strings.TrimSpace(result), "candidates.json", "voters.json"
 
+}
+
+func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool) {
+	myApp := app
+
+	mainWindow := myApp.NewWindow("Graph Generator")
+	mainWindow.Resize(fyne.NewSize(800, 600))
+
+	titleLabel := widget.NewLabelWithStyle("Graph Generator", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+
+	isCandidates = true
+	perspectiveLabel1 := "Saving graph of Candidates"
+	perspectiveLabel2 := "Saving graph of Voters"
+	perspectiveSelectedButton := widget.NewButton(perspectiveLabel1, nil)
+	nextPespectiveLabel := perspectiveLabel2
+	perspectiveSelectedButton.OnTapped = func() {
+		perspectiveSelectedButton.SetText(nextPespectiveLabel)
+		if nextPespectiveLabel == perspectiveLabel1 {
+			nextPespectiveLabel = perspectiveLabel2
+			isCandidates = !isCandidates
+		} else {
+			nextPespectiveLabel = perspectiveLabel1
+			isCandidates = !isCandidates
+		}
+	}
+	isMax = true
+	dataTypeLabel1 := "Saving Max Distortion Graph"
+	dataTypeLabel2 := "Saving Average Distoriton Graph"
+	dataTypeSelectedButton := widget.NewButton(dataTypeLabel1, nil)
+	nextDataTypeLabel := dataTypeLabel2
+	dataTypeSelectedButton.OnTapped = func() {
+		dataTypeSelectedButton.SetText(nextDataTypeLabel)
+		if nextDataTypeLabel == dataTypeLabel1 {
+			nextDataTypeLabel = dataTypeLabel2
+			isMax = !isMax
+		} else {
+			nextDataTypeLabel = dataTypeLabel1
+			isMax = !isMax
+		}
+	}
+
+	viewCombinedGraphButton := widget.NewButton("Save Combined Graph", func() {
+		primary.ReadAndGraphMultiResults(fileName, isMax, isCandidates)
+	})
+
+	mainWindow.SetContent(container.NewVBox(
+		layout.NewSpacer(),
+		titleLabel,
+		perspectiveSelectedButton,
+		dataTypeSelectedButton,
+		viewCombinedGraphButton,
+		layout.NewSpacer(),
+	))
+	mainWindow.Show()
 }

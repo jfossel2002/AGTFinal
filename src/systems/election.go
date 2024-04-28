@@ -29,6 +29,9 @@ type Voter struct {
 
 // Returns the distortion of the election
 func GetDistortion(winnterCost, optimalCost float64) float64 {
+	if optimalCost == 0 {
+		return 1
+	}
 	return (winnterCost / optimalCost)
 }
 
