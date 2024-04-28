@@ -84,7 +84,7 @@ func generateRandomNumbers(x int, y int) []int {
 }
 
 // Runs a given number of scenarios allowing the user to choose the number of canidates, voters, and the voting system
-func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
+func RunScenario(numRuns int, numCandidates int, numVoters int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string, float64, float64) {
 	maxSTVDistortion := -1.0
 	maxBordaDistortion := -1.0
 	maxSTVDistortionCanidates := []voting_systems.Candidate{}
@@ -100,18 +100,20 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 	maxPluralityVetoDistortion := -1.0
 	maxPluralityVetoDistortionCanidates := []voting_systems.Candidate{}
 	maxPluralityVetoDistortionVoters := []voting_systems.Voter{}
+	averageDistortion := 0.0
 	for i := 0; i < numRuns; i++ {
 		canidates := initiateCanidates(numCandidates, maxPosition)
 		canidates = distributeCandidates(canidates, minPosition, maxPosition)
 		canidatesCopy := make([]voting_systems.Candidate, len(canidates))
 		copy(canidatesCopy, canidates)
-		voters := initiateVoters(5, maxPosition)
-		voters = distributeVoters(5, minPosition, maxPosition, totalVoters)
+		voters := initiateVoters(numVoters, maxPosition)
+		voters = distributeVoters(numVoters, minPosition, maxPosition, totalVoters)
 		optimalCost, _ := voting_systems.DetermineOptimalCanidate(canidates, voters)
 		if votingSystem == "STV" || votingSystem == "All" {
 			STVWinner, _, _ := voting_systems.InitiateSTV(canidatesCopy, voters)
 			STVWinnerCost := voting_systems.GetSocailCost(STVWinner, voters)
 			STVDistortion := voting_systems.GetDistortion(STVWinnerCost, optimalCost)
+			averageDistortion += STVDistortion
 			if STVDistortion > maxSTVDistortion {
 				maxSTVDistortion = STVDistortion
 				//Copy canidates to maxSTVDistortionCanidates
@@ -133,6 +135,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			bordaWinner, _ := voting_systems.CalculateBordaWinner(canidatesCopy, voters)
 			bordaWinnerCost := voting_systems.GetSocailCost(bordaWinner, voters)
 			bordaDistortion := voting_systems.GetDistortion(bordaWinnerCost, optimalCost)
+			averageDistortion += bordaDistortion
 			if bordaDistortion > maxBordaDistortion {
 				maxBordaDistortion = bordaDistortion
 				maxBordaDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
@@ -147,6 +150,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			pluralityWinner, _ := voting_systems.InitiatePlurality(canidatesCopy, voters)
 			pluralityWinnerCost := voting_systems.GetSocailCost(pluralityWinner, voters)
 			pluralityDistortion := voting_systems.GetDistortion(pluralityWinnerCost, optimalCost)
+			averageDistortion += pluralityDistortion
 			if pluralityDistortion > maxPluralityDistortion {
 				maxPluralityDistortion = pluralityDistortion
 				maxPluralityDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
@@ -159,6 +163,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			copelandWinner, _ := voting_systems.DetermineCopelandWinner(canidatesCopy, voters)
 			copelandWinnerCost := voting_systems.GetSocailCost(copelandWinner, voters)
 			copelandDistortion := voting_systems.GetDistortion(copelandWinnerCost, optimalCost)
+			averageDistortion += copelandDistortion
 			if copelandDistortion > maxCopelandDistortion {
 				maxCopelandDistortion = copelandDistortion
 				maxCopelandDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
@@ -171,6 +176,7 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 			pluralityVetoWinner, _, _ := voting_systems.InitiatePluralityVeto(canidatesCopy, voters)
 			pluralityVetoWinnerCost := voting_systems.GetSocailCost(pluralityVetoWinner, voters)
 			pluralityVetoDistortion := voting_systems.GetDistortion(pluralityVetoWinnerCost, optimalCost)
+			averageDistortion += pluralityVetoDistortion
 			if pluralityVetoDistortion > maxPluralityVetoDistortion {
 				maxPluralityVetoDistortion = pluralityVetoDistortion
 				maxPluralityVetoDistortionCanidates = make([]voting_systems.Candidate, len(canidates))
@@ -181,43 +187,44 @@ func RunScenario(numRuns int, numCandidates int, maxPosition float64, minPositio
 		}
 
 	}
+	averageDistortion = averageDistortion / float64(numRuns)
 	//Save the data to a file
 	if votingSystem == "STV" || votingSystem == "All" {
 		candidateFileName := "STV-Canidates-" + fmt.Sprintf("%.2f", maxSTVDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxSTVDistortionCanidates, candidateFileName)
 		voterFileName := "STV-Voters-" + fmt.Sprintf("%.2f", maxSTVDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveVoters(maxSTVDistortionVoters, voterFileName)
-		return "Max STV Distortion: " + fmt.Sprintf("%f", maxSTVDistortion), candidateFileName, voterFileName
+		return "Max STV Distortion: " + fmt.Sprintf("%f", maxSTVDistortion), candidateFileName, voterFileName, maxSTVDistortion, averageDistortion
 	}
 	if votingSystem == "Borda Count" || votingSystem == "All" {
 		candidateFileName := "Borda-Canidates-" + fmt.Sprintf("%.2f", maxBordaDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxBordaDistortionCanidates, candidateFileName)
 		voterFileName := "Borda-Voters-" + fmt.Sprintf("%.2f", maxBordaDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveVoters(maxBordaDistortionVoters, voterFileName)
-		return "Max Borda Distortion: " + fmt.Sprintf("%f", maxBordaDistortion), candidateFileName, voterFileName
+		return "Max Borda Distortion: " + fmt.Sprintf("%f", maxBordaDistortion), candidateFileName, voterFileName, maxBordaDistortion, averageDistortion
 	}
 	if votingSystem == "Plurality" || votingSystem == "All" {
 		candidateFileName := "Plurality-Canidates-" + fmt.Sprintf("%.2f", maxPluralityDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxPluralityDistortionCanidates, candidateFileName)
 		voterFileName := "Plurality-Voters-" + fmt.Sprintf("%.2f", maxPluralityDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveVoters(maxPluralityDistortionVoters, voterFileName)
-		return "Max Plurality Distortion: " + fmt.Sprintf("%f", maxPluralityDistortion), candidateFileName, voterFileName
+		return "Max Plurality Distortion: " + fmt.Sprintf("%f", maxPluralityDistortion), candidateFileName, voterFileName, maxPluralityDistortion, averageDistortion
 	}
 	if votingSystem == "Copeland" || votingSystem == "All" {
 		candidateFileName := "Copeland-Canidates-" + fmt.Sprintf("%.2f", maxCopelandDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxCopelandDistortionCanidates, candidateFileName)
 		voterFileName := "Copeland-Voters-" + fmt.Sprintf("%.2f", maxCopelandDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveVoters(maxCopelandDistortionVoters, voterFileName)
-		return "Max Copeland Distortion: " + fmt.Sprintf("%f", maxCopelandDistortion), candidateFileName, voterFileName
+		return "Max Copeland Distortion: " + fmt.Sprintf("%f", maxCopelandDistortion), candidateFileName, voterFileName, maxCopelandDistortion, averageDistortion
 	}
 	if votingSystem == "Plurality Veto" || votingSystem == "All" {
 		candidateFileName := "PVeto-Canidates-" + fmt.Sprintf("%.2f", maxPluralityVetoDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveCanidates(maxPluralityVetoDistortionCanidates, candidateFileName)
 		voterFileName := "PVeto-Voters-" + fmt.Sprintf("%.2f", maxPluralityVetoDistortion) + "-" + time.Now().Format("2006-01-02-15:04:05") + ".json"
 		saveVoters(maxPluralityVetoDistortionVoters, voterFileName)
-		return "Max PLurality Veto Distortion: " + fmt.Sprintf("%f", maxPluralityVetoDistortion), candidateFileName, voterFileName
+		return "Max PLurality Veto Distortion: " + fmt.Sprintf("%f", maxPluralityVetoDistortion), candidateFileName, voterFileName, maxPluralityVetoDistortion, averageDistortion
 	}
-	return "Done", "", ""
+	return "Done", "", "", 0.0, 0.0
 }
 
 // Save the canidates to a file
