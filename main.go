@@ -10,6 +10,7 @@ import (
 	"log"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strconv"
 
 	primary "AGT_Midterm/src"
@@ -409,7 +410,6 @@ func displaySimulatorVotes(app fyne.App) {
 	var viewDetailsButton = widget.NewButton("View Details", func() {
 		candidateFilePath := filepath.Join(".", "Jsons", "Candidates", candidateFileName)
 		voterFilePath := filepath.Join(".", "Jsons", "Voters", voterFileName)
-		//Add try catch for file not found
 
 		displayVotingResults(myApp, candidateFilePath, voterFilePath)
 	})
@@ -508,20 +508,89 @@ func multiSimulation(app fyne.App) {
 	scrollContainer := container.NewScroll(resultsLabel)
 	scrollContainer.SetMinSize(fyne.NewSize(200, 200))
 
-	// Function to parse entry inputs and run simulation
+	fileName := ""
+	minNumCandidates := 0
+	maxNumCandidates := 0
+	minNumVoters := 0
+	maxNumVoters := 0
+	candidateOptions := []string{"All"}
+	voterOptions := []string{"All"}
+
+	candidateDropdown := widget.NewSelect(candidateOptions, nil)
+	voterDropdown := widget.NewSelect(voterOptions, nil)
+	selectedNumCandidates := ""
+	selectedNumVoters := ""
+
+	if len(candidateOptions) > 0 {
+		candidateDropdown.SetSelected(candidateOptions[0])
+	}
+	if len(voterOptions) > 0 {
+		voterDropdown.SetSelected(voterOptions[0])
+	}
+	resultsLabel.SetText(selectedNumCandidates + " " + selectedNumVoters)
+	result := make(map[primary.MultiInput]primary.MultiOutput)
+
+	updateResults := func() {
+		var keys []primary.MultiInput
+		for k := range result {
+			keys = append(keys, k)
+		}
+
+		sort.Slice(keys, func(i, j int) bool {
+			if keys[i].NumCandidates == keys[j].NumCandidates {
+				return keys[i].NumVoters < keys[j].NumVoters
+			}
+			return keys[i].NumCandidates < keys[j].NumCandidates
+		})
+
+		outputText := ""
+		for _, key := range keys {
+			value := result[key]
+			candidateMatch := strconv.Itoa(key.NumCandidates) == selectedNumCandidates || selectedNumCandidates == "All"
+			voterMatch := strconv.Itoa(key.NumVoters) == selectedNumVoters || selectedNumVoters == "All"
+
+			if candidateMatch && voterMatch {
+				outputText += fmt.Sprintf("Number of Candidates: %d, Number of Voters: %d\n", key.NumCandidates, key.NumVoters) + value.Result + "\nMax Distortion: " + fmt.Sprintf("%.2f", value.MaxDistortion) + ", Average Distortion: " + fmt.Sprintf("%.2f", value.AverageDistortion) + "\n\n"
+			}
+		}
+		resultsLabel.SetText(outputText)
+	}
+
+	candidateDropdown.SetSelected(selectedNumCandidates)
+	voterDropdown.SetSelected(selectedNumVoters)
+
+	candidateDropdown.OnChanged = func(selected string) {
+		selectedNumCandidates = selected
+		updateResults()
+	}
+
+	voterDropdown.OnChanged = func(selected string) {
+		selectedNumVoters = selected
+		updateResults()
+	}
+
 	runSimulation := func(system string) {
 		numRuns, _ := strconv.Atoi(numRunsEntry.Text)
-		minNumCandidates, _ := strconv.Atoi(minNumCandidatesEntry.Text)
-		maxNumCandidates, _ := strconv.Atoi(maxNumCandidatesEntry.Text)
-		minNumVoters, _ := strconv.Atoi(minNumVoterssEntry.Text)
-		maxNumVoters, _ := strconv.Atoi(maxNumVoterssEntry.Text)
+		minNumCandidates, _ = strconv.Atoi(minNumCandidatesEntry.Text)
+		maxNumCandidates, _ = strconv.Atoi(maxNumCandidatesEntry.Text)
+		minNumVoters, _ = strconv.Atoi(minNumVoterssEntry.Text)
+		maxNumVoters, _ = strconv.Atoi(maxNumVoterssEntry.Text)
 		maxPosition, _ := strconv.ParseFloat(maxPositionEntry.Text, 64)
 		minPosition, _ := strconv.ParseFloat(minPositionEntry.Text, 64)
 		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
-		result := ""
 
-		result, _, _ = multiSimResults(app, minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
-		resultsLabel.SetText(result)
+		for i := minNumCandidates; i <= maxNumCandidates; i++ {
+			candidateOptions = append(candidateOptions, strconv.Itoa(i))
+		}
+		for i := minNumVoters; i <= maxNumVoters; i++ {
+			voterOptions = append(voterOptions, strconv.Itoa(i))
+		}
+
+		candidateDropdown.SetOptions(candidateOptions)
+		voterDropdown.SetOptions(voterOptions)
+
+		result, _, _, fileName = multiSimResults(app, minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
+		fmt.Println(result)
 	}
 
 	// Create buttons for each voting system
@@ -535,6 +604,13 @@ func multiSimulation(app fyne.App) {
 		}(system))
 		votingSystemButtons = append(votingSystemButtons, button)
 	}
+
+	var graphsButton = widget.NewButton("Create Graphs", func() {
+		DisplayGraphs(app, fileName, true, true)
+	})
+
+	fmt.Println(selectedNumCandidates)
+	fmt.Println(selectedNumVoters)
 
 	var canvasButtons []fyne.CanvasObject
 	for _, button := range votingSystemButtons {
@@ -554,10 +630,12 @@ func multiSimulation(app fyne.App) {
 	)
 
 	mainWindow.SetContent(container.NewVBox(
+		graphsButton,
 		layout.NewSpacer(),
 		titleLabel,
 		paramsContainer,
 		container.New(layout.NewGridLayoutWithRows(3), canvasButtons...),
+		container.New(layout.NewGridLayoutWithColumns(2), candidateDropdown, voterDropdown),
 		scrollContainer,
 		layout.NewSpacer(),
 	))
@@ -565,7 +643,7 @@ func multiSimulation(app fyne.App) {
 
 }
 
-func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (string, string, string) {
+func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (map[primary.MultiInput]primary.MultiOutput, string, string, string) {
 	result := ""
 	multiResults := make(map[primary.MultiInput]primary.MultiOutput)
 	fileName := ""
@@ -588,8 +666,7 @@ func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVote
 		result += fmt.Sprintf("Max Distortion: %.2f, Average Distortion: %.2f\n\n", value.MaxDistortion, value.AverageDistortion)
 	}
 	//fmt.Println(result)
-	DisplayGraphs(app, fileName, true, true)
-	return strings.TrimSpace(result), "candidates.json", "voters.json"
+	return multiResults, "candidates.json", "voters.json", fileName
 
 }
 
