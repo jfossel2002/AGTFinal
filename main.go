@@ -513,13 +513,13 @@ func multiSimulation(app fyne.App) {
 	maxNumCandidates := 0
 	minNumVoters := 0
 	maxNumVoters := 0
-	candidateOptions := []string{"All"}
-	voterOptions := []string{"All"}
+	candidateOptions := []string{"All Candidates"}
+	voterOptions := []string{"All Voters"}
 
 	candidateDropdown := widget.NewSelect(candidateOptions, nil)
 	voterDropdown := widget.NewSelect(voterOptions, nil)
-	selectedNumCandidates := ""
-	selectedNumVoters := ""
+	selectedNumCandidates := "All Candidates"
+	selectedNumVoters := "All Voters"
 
 	if len(candidateOptions) > 0 {
 		candidateDropdown.SetSelected(candidateOptions[0])
@@ -546,8 +546,16 @@ func multiSimulation(app fyne.App) {
 		outputText := ""
 		for _, key := range keys {
 			value := result[key]
-			candidateMatch := strconv.Itoa(key.NumCandidates) == selectedNumCandidates || selectedNumCandidates == "All"
-			voterMatch := strconv.Itoa(key.NumVoters) == selectedNumVoters || selectedNumVoters == "All"
+			candidateSelectedNumber := selectedNumCandidates[0:1]
+			voterSelectedNumber := selectedNumVoters[0:1]
+			if candidateSelectedNumber == "A" {
+				candidateSelectedNumber = "All"
+			}
+			if voterSelectedNumber == "A" {
+				voterSelectedNumber = "All"
+			}
+			candidateMatch := strconv.Itoa(key.NumCandidates) == candidateSelectedNumber || candidateSelectedNumber == "All"
+			voterMatch := strconv.Itoa(key.NumVoters) == voterSelectedNumber || voterSelectedNumber == "All"
 
 			if candidateMatch && voterMatch {
 				outputText += fmt.Sprintf("Number of Candidates: %d, Number of Voters: %d\n", key.NumCandidates, key.NumVoters) + value.Result + "\nMax Distortion: " + fmt.Sprintf("%.2f", value.MaxDistortion) + ", Average Distortion: " + fmt.Sprintf("%.2f", value.AverageDistortion) + "\n\n"
@@ -580,17 +588,18 @@ func multiSimulation(app fyne.App) {
 		totalVoters, _ := strconv.Atoi(totalVotersEntry.Text)
 
 		for i := minNumCandidates; i <= maxNumCandidates; i++ {
-			candidateOptions = append(candidateOptions, strconv.Itoa(i))
+			string_option := strconv.Itoa(i) + " Candidates"
+			candidateOptions = append(candidateOptions, string_option)
 		}
 		for i := minNumVoters; i <= maxNumVoters; i++ {
-			voterOptions = append(voterOptions, strconv.Itoa(i))
+			string_option := strconv.Itoa(i) + " Voters"
+			voterOptions = append(voterOptions, string_option)
 		}
 
 		candidateDropdown.SetOptions(candidateOptions)
 		voterDropdown.SetOptions(voterOptions)
 
 		result, _, _, fileName = multiSimResults(app, minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
-		fmt.Println(result)
 	}
 
 	// Create buttons for each voting system
@@ -678,47 +687,26 @@ func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool)
 
 	titleLabel := widget.NewLabelWithStyle("Graph Generator", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
-	isCandidates = true
-	perspectiveLabel1 := "Saving graph of Candidates"
-	perspectiveLabel2 := "Saving graph of Voters"
-	perspectiveSelectedButton := widget.NewButton(perspectiveLabel1, nil)
-	nextPespectiveLabel := perspectiveLabel2
-	perspectiveSelectedButton.OnTapped = func() {
-		perspectiveSelectedButton.SetText(nextPespectiveLabel)
-		if nextPespectiveLabel == perspectiveLabel1 {
-			nextPespectiveLabel = perspectiveLabel2
-			isCandidates = !isCandidates
-		} else {
-			nextPespectiveLabel = perspectiveLabel1
-			isCandidates = !isCandidates
-		}
-	}
-	isMax = true
-	dataTypeLabel1 := "Saving Max Distortion Graph"
-	dataTypeLabel2 := "Saving Average Distoriton Graph"
-	dataTypeSelectedButton := widget.NewButton(dataTypeLabel1, nil)
-	nextDataTypeLabel := dataTypeLabel2
-	dataTypeSelectedButton.OnTapped = func() {
-		dataTypeSelectedButton.SetText(nextDataTypeLabel)
-		if nextDataTypeLabel == dataTypeLabel1 {
-			nextDataTypeLabel = dataTypeLabel2
-			isMax = !isMax
-		} else {
-			nextDataTypeLabel = dataTypeLabel1
-			isMax = !isMax
-		}
-	}
+	CandidateMaxGraphButton := widget.NewButton("Graph Candidates Max Distortion", func() {
+		primary.ReadAndGraphMultiResults(fileName, true, true)
+	})
 
-	viewCombinedGraphButton := widget.NewButton("Save Combined Graph", func() {
-		primary.ReadAndGraphMultiResults(fileName, isMax, isCandidates)
+	CandidateAvgGraphButton := widget.NewButton("Graph Candidates Average Distortion", func() {
+		primary.ReadAndGraphMultiResults(fileName, false, true)
+	})
+
+	VoterMaxGraphButton := widget.NewButton("Graph Voters Max Distortion", func() {
+		primary.ReadAndGraphMultiResults(fileName, true, false)
+	})
+
+	VoterAvgGraphButton := widget.NewButton("Graph Voters Average Distortion", func() {
+		primary.ReadAndGraphMultiResults(fileName, false, false)
 	})
 
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
-		perspectiveSelectedButton,
-		dataTypeSelectedButton,
-		viewCombinedGraphButton,
+		container.New(layout.NewGridLayoutWithRows(2), CandidateMaxGraphButton, CandidateAvgGraphButton, VoterMaxGraphButton, VoterAvgGraphButton),
 		layout.NewSpacer(),
 	))
 	mainWindow.Show()
