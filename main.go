@@ -600,6 +600,7 @@ func multiSimulation(app fyne.App) {
 		voterDropdown.SetOptions(voterOptions)
 
 		result, _, _, fileName = multiSimResults(app, minNumCandidates, maxNumCandidates, minNumVoters, maxNumVoters, numRuns, maxPosition, minPosition, totalVoters, system)
+		updateResults()
 	}
 
 	// Create buttons for each voting system
@@ -681,6 +682,8 @@ func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVote
 
 func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool) {
 	myApp := app
+	confirmLabelText := "Select a graph to generate"
+	confirmLabel := widget.NewLabel(confirmLabelText)
 
 	mainWindow := myApp.NewWindow("Graph Generator")
 	mainWindow.Resize(fyne.NewSize(800, 600))
@@ -689,25 +692,36 @@ func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool)
 
 	CandidateMaxGraphButton := widget.NewButton("Graph Candidates Max Distortion", func() {
 		primary.ReadAndGraphMultiResults(fileName, true, true)
+		confirmLabelText = "Max Candidate Distortion Graph Created"
+		confirmLabel.SetText(confirmLabelText)
 	})
 
 	CandidateAvgGraphButton := widget.NewButton("Graph Candidates Average Distortion", func() {
 		primary.ReadAndGraphMultiResults(fileName, false, true)
+		confirmLabelText = "Average Candidate Distortion Graph Created"
+		confirmLabel.SetText(confirmLabelText)
 	})
 
 	VoterMaxGraphButton := widget.NewButton("Graph Voters Max Distortion", func() {
 		primary.ReadAndGraphMultiResults(fileName, true, false)
+		confirmLabelText = "Max Voter Distortion Graph Created"
+		confirmLabel.SetText(confirmLabelText)
 	})
 
 	VoterAvgGraphButton := widget.NewButton("Graph Voters Average Distortion", func() {
 		primary.ReadAndGraphMultiResults(fileName, false, false)
+		confirmLabelText = "Average Voter Distortion Graph Created"
+		confirmLabel.SetText(confirmLabelText)
 	})
+
+	//Create label
 
 	mainWindow.SetContent(container.NewVBox(
 		layout.NewSpacer(),
 		titleLabel,
 		container.New(layout.NewGridLayoutWithRows(2), CandidateMaxGraphButton, CandidateAvgGraphButton, VoterMaxGraphButton, VoterAvgGraphButton),
 		layout.NewSpacer(),
+		confirmLabel,
 	))
 	mainWindow.Show()
 }
