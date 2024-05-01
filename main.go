@@ -546,8 +546,10 @@ func multiSimulation(app fyne.App) {
 		outputText := ""
 		for _, key := range keys {
 			value := result[key]
-			candidateSelectedNumber := selectedNumCandidates[0:1]
-			voterSelectedNumber := selectedNumVoters[0:1]
+			candidateSelectedNumberString := strings.Split(selectedNumCandidates, " ")
+			candidateSelectedNumber := candidateSelectedNumberString[0]
+			voterSelectedNumberString := strings.Split(selectedNumVoters, " ")
+			voterSelectedNumber := voterSelectedNumberString[0]
 			if candidateSelectedNumber == "A" {
 				candidateSelectedNumber = "All"
 			}

@@ -101,7 +101,7 @@ func RunScenario(numRuns int, numCandidates int, numVoters int, maxPosition floa
 	maxPluralityVetoDistortionCanidates := []voting_systems.Candidate{}
 	maxPluralityVetoDistortionVoters := []voting_systems.Voter{}
 	averageDistortion := 0.0
-	for i := 0; i < numRuns; i++ {
+	for i := 0; i < numRuns; i++ { //TODO put this into parallel
 		canidates := initiateCanidates(numCandidates, maxPosition)
 		canidates = distributeCandidates(canidates, minPosition, maxPosition)
 		canidatesCopy := make([]voting_systems.Candidate, len(canidates))

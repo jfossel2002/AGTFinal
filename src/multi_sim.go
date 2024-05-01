@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"gonum.org/v1/plot"
@@ -159,7 +160,7 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 		sort.Ints(keys)
 		for _, key := range keys {
 			val := parsedData[key]
-			pts = append(pts, plotter.XY{X: float64(key - 48), Y: val})
+			pts = append(pts, plotter.XY{X: float64(key), Y: val})
 		}
 
 		lpLine, lpPoints, err := plotter.NewLinePoints(pts)
@@ -172,9 +173,9 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 
 		p.Add(lpLine, lpPoints)
 		if isCandidates {
-			p.Legend.Add(fmt.Sprintf("Candidates %d", value), lpLine, lpPoints)
+			p.Legend.Add(fmt.Sprintf("Candidates %d", value+1), lpLine, lpPoints)
 		} else {
-			p.Legend.Add(fmt.Sprintf("Voters %d", value), lpLine, lpPoints)
+			p.Legend.Add(fmt.Sprintf("Voters %d", value+1), lpLine, lpPoints)
 		}
 	}
 
@@ -205,18 +206,24 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 }
 
 func MultiParse(results MultiResults, isCandidates bool) []int {
-	checkIndex := 0
-	if isCandidates {
-		checkIndex = 0
-	} else {
-		checkIndex = 2
-	}
 	seenValues := make(map[int]bool)
 	for key := range results.Results {
-		if seenValues[int(key[checkIndex])] {
-			continue
+		numEach := strings.Split(key, "_")
+		numCandidates := numEach[0]
+		numVoters := numEach[1]
+		if isCandidates {
+			value, _ := strconv.Atoi(string(numCandidates))
+			if seenValues[value] {
+				continue
+			}
+			seenValues[value] = true
+		} else {
+			value, _ := strconv.Atoi(string(numVoters))
+			if seenValues[value] {
+				continue
+			}
+			seenValues[value] = true
 		}
-		seenValues[int(key[checkIndex])] = true
 	}
 	keys := make([]int, 0, len(seenValues))
 	for key := range seenValues {
@@ -227,30 +234,40 @@ func MultiParse(results MultiResults, isCandidates bool) []int {
 
 func ParseCandidatesOrVoters(results MultiResults, numCandiatesOrVoters int, isCandidates bool, isMax bool) map[int]float64 {
 	parsedData := make(map[int]float64)
-	checkValue := 0
-	if isCandidates {
-		checkValue = 0
-	} else {
-		checkValue = 2
-	}
 	for key, value := range results.Results {
-		string_value, err := strconv.Atoi(string(key[checkValue]))
-		if err != nil {
-			fmt.Println("Error converting string to int:", err)
+		numEach := strings.Split(key, "_")
+		numCandidates := numEach[0]
+		numVoters := numEach[1]
+		string_value := 0
+		err := error(nil)
+		if isCandidates {
+			string_value, err = strconv.Atoi(string(numCandidates))
+			if err != nil {
+				fmt.Println("Error converting string to int:", err)
+			}
+		} else {
+			string_value, err = strconv.Atoi(string(numVoters))
+			if err != nil {
+				fmt.Println("Error converting string to int:", err)
+			}
 		}
 
 		if string_value == numCandiatesOrVoters {
 			if isMax {
 				if isCandidates {
-					parsedData[int(key[checkValue+2])] = value.MaxDistortion
+					position, _ := strconv.Atoi(numVoters)
+					parsedData[position] = value.MaxDistortion
 				} else {
-					parsedData[int(key[checkValue-2])] = value.MaxDistortion
+					position, _ := strconv.Atoi(numCandidates)
+					parsedData[position] = value.MaxDistortion
 				}
 			} else {
 				if isCandidates {
-					parsedData[int(key[checkValue+2])] = value.AverageDistortion
+					position, _ := strconv.Atoi(numVoters)
+					parsedData[position] = value.AverageDistortion
 				} else {
-					parsedData[int(key[checkValue-2])] = value.AverageDistortion
+					position, _ := strconv.Atoi(numCandidates)
+					parsedData[position] = value.AverageDistortion
 				}
 			}
 		}

@@ -1,0 +1,704 @@
+{
+ "Results": {
+  "10_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:10.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "10_10": {
+   "Result": "Max Copeland Distortion: 1.822733",
+   "CandidateFileName": "Copeland-Canidates-1.82-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-1.82-2024-05-01-10:40:11.json",
+   "MaxDistortion": 1.8227334235453319,
+   "AverageDistortion": 1.0149195691591548
+  },
+  "10_2": {
+   "Result": "Max Copeland Distortion: 2.846154",
+   "CandidateFileName": "Copeland-Canidates-2.85-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-2.85-2024-05-01-10:40:10.json",
+   "MaxDistortion": 2.8461538461538427,
+   "AverageDistortion": 1.0287945464752437
+  },
+  "10_3": {
+   "Result": "Max Copeland Distortion: 2.442804",
+   "CandidateFileName": "Copeland-Canidates-2.44-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-2.44-2024-05-01-10:40:10.json",
+   "MaxDistortion": 2.442804428044281,
+   "AverageDistortion": 1.0290331994610222
+  },
+  "10_4": {
+   "Result": "Max Copeland Distortion: 2.212121",
+   "CandidateFileName": "Copeland-Canidates-2.21-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-2.21-2024-05-01-10:40:10.json",
+   "MaxDistortion": 2.2121212121212115,
+   "AverageDistortion": 1.0231079653753108
+  },
+  "10_5": {
+   "Result": "Max Copeland Distortion: 1.886241",
+   "CandidateFileName": "Copeland-Canidates-1.89-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-1.89-2024-05-01-10:40:11.json",
+   "MaxDistortion": 1.886240520043337,
+   "AverageDistortion": 1.0188932559370745
+  },
+  "10_6": {
+   "Result": "Max Copeland Distortion: 1.786755",
+   "CandidateFileName": "Copeland-Canidates-1.79-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-1.79-2024-05-01-10:40:11.json",
+   "MaxDistortion": 1.786754966887417,
+   "AverageDistortion": 1.0170267215550588
+  },
+  "10_7": {
+   "Result": "Max Copeland Distortion: 1.987189",
+   "CandidateFileName": "Copeland-Canidates-1.99-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-1.99-2024-05-01-10:40:11.json",
+   "MaxDistortion": 1.9871891484551618,
+   "AverageDistortion": 1.015534288480986
+  },
+  "10_8": {
+   "Result": "Max Copeland Distortion: 2.004657",
+   "CandidateFileName": "Copeland-Canidates-2.00-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-2.00-2024-05-01-10:40:11.json",
+   "MaxDistortion": 2.0046565774155995,
+   "AverageDistortion": 1.0151951299465412
+  },
+  "10_9": {
+   "Result": "Max Copeland Distortion: 1.791197",
+   "CandidateFileName": "Copeland-Canidates-1.79-2024-05-01-10:40:11.json",
+   "VoterFileName": "Copeland-Voters-1.79-2024-05-01-10:40:11.json",
+   "MaxDistortion": 1.7911969940955452,
+   "AverageDistortion": 1.015152708686735
+  },
+  "1_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_10": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:00.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_2": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_3": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_4": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_5": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_6": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_7": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_8": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:39:59.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:39:59.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "1_9": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:00.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "2_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:00.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "2_10": {
+   "Result": "Max Copeland Distortion: 2.228296",
+   "CandidateFileName": "Copeland-Canidates-2.23-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.23-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.228295819935691,
+   "AverageDistortion": 1.0117189195950078
+  },
+  "2_2": {
+   "Result": "Max Copeland Distortion: 2.756098",
+   "CandidateFileName": "Copeland-Canidates-2.76-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-2.76-2024-05-01-10:40:00.json",
+   "MaxDistortion": 2.75609756097561,
+   "AverageDistortion": 1.0128679516555508
+  },
+  "2_3": {
+   "Result": "Max Copeland Distortion: 2.625282",
+   "CandidateFileName": "Copeland-Canidates-2.63-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-2.63-2024-05-01-10:40:00.json",
+   "MaxDistortion": 2.6252821670428887,
+   "AverageDistortion": 1.0158748537843232
+  },
+  "2_4": {
+   "Result": "Max Copeland Distortion: 2.693814",
+   "CandidateFileName": "Copeland-Canidates-2.69-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-2.69-2024-05-01-10:40:00.json",
+   "MaxDistortion": 2.6938139741878055,
+   "AverageDistortion": 1.016536859557858
+  },
+  "2_5": {
+   "Result": "Max Copeland Distortion: 2.285971",
+   "CandidateFileName": "Copeland-Canidates-2.29-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-2.29-2024-05-01-10:40:00.json",
+   "MaxDistortion": 2.2859712230215825,
+   "AverageDistortion": 1.015602318255029
+  },
+  "2_6": {
+   "Result": "Max Copeland Distortion: 2.521583",
+   "CandidateFileName": "Copeland-Canidates-2.52-2024-05-01-10:40:00.json",
+   "VoterFileName": "Copeland-Voters-2.52-2024-05-01-10:40:00.json",
+   "MaxDistortion": 2.5215827338129495,
+   "AverageDistortion": 1.013458631398141
+  },
+  "2_7": {
+   "Result": "Max Copeland Distortion: 2.219512",
+   "CandidateFileName": "Copeland-Canidates-2.22-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.22-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.2195121951219514,
+   "AverageDistortion": 1.0133193587531764
+  },
+  "2_8": {
+   "Result": "Max Copeland Distortion: 2.135507",
+   "CandidateFileName": "Copeland-Canidates-2.14-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.14-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.1355072463768114,
+   "AverageDistortion": 1.0134100194207762
+  },
+  "2_9": {
+   "Result": "Max Copeland Distortion: 2.164973",
+   "CandidateFileName": "Copeland-Canidates-2.16-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.16-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.1649726348709932,
+   "AverageDistortion": 1.0130725602217565
+  },
+  "3_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:01.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "3_10": {
+   "Result": "Max Copeland Distortion: 1.910794",
+   "CandidateFileName": "Copeland-Canidates-1.91-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-1.91-2024-05-01-10:40:02.json",
+   "MaxDistortion": 1.9107939339875115,
+   "AverageDistortion": 1.0155856661125735
+  },
+  "3_2": {
+   "Result": "Max Copeland Distortion: 2.821561",
+   "CandidateFileName": "Copeland-Canidates-2.82-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.82-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.821561338289963,
+   "AverageDistortion": 1.021407921273058
+  },
+  "3_3": {
+   "Result": "Max Copeland Distortion: 2.508772",
+   "CandidateFileName": "Copeland-Canidates-2.51-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.51-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.508771929824561,
+   "AverageDistortion": 1.02834326851389
+  },
+  "3_4": {
+   "Result": "Max Copeland Distortion: 2.178441",
+   "CandidateFileName": "Copeland-Canidates-2.18-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.18-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.178440607012036,
+   "AverageDistortion": 1.0250788591131523
+  },
+  "3_5": {
+   "Result": "Max Copeland Distortion: 2.434355",
+   "CandidateFileName": "Copeland-Canidates-2.43-2024-05-01-10:40:01.json",
+   "VoterFileName": "Copeland-Voters-2.43-2024-05-01-10:40:01.json",
+   "MaxDistortion": 2.434355118565645,
+   "AverageDistortion": 1.0215200365871
+  },
+  "3_6": {
+   "Result": "Max Copeland Distortion: 2.182602",
+   "CandidateFileName": "Copeland-Canidates-2.18-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-2.18-2024-05-01-10:40:02.json",
+   "MaxDistortion": 2.182602174728159,
+   "AverageDistortion": 1.0189020409959104
+  },
+  "3_7": {
+   "Result": "Max Copeland Distortion: 2.237805",
+   "CandidateFileName": "Copeland-Canidates-2.24-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-2.24-2024-05-01-10:40:02.json",
+   "MaxDistortion": 2.2378048780487805,
+   "AverageDistortion": 1.0184970992974895
+  },
+  "3_8": {
+   "Result": "Max Copeland Distortion: 2.077441",
+   "CandidateFileName": "Copeland-Canidates-2.08-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-2.08-2024-05-01-10:40:02.json",
+   "MaxDistortion": 2.077441077441076,
+   "AverageDistortion": 1.0173553783163902
+  },
+  "3_9": {
+   "Result": "Max Copeland Distortion: 1.817196",
+   "CandidateFileName": "Copeland-Canidates-1.82-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-1.82-2024-05-01-10:40:02.json",
+   "MaxDistortion": 1.8171956609079953,
+   "AverageDistortion": 1.0170651619927242
+  },
+  "4_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:02.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "4_10": {
+   "Result": "Max Copeland Distortion: 2.331516",
+   "CandidateFileName": "Copeland-Canidates-2.33-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-2.33-2024-05-01-10:40:03.json",
+   "MaxDistortion": 2.331515812431843,
+   "AverageDistortion": 1.017445758552783
+  },
+  "4_2": {
+   "Result": "Max Copeland Distortion: 2.590410",
+   "CandidateFileName": "Copeland-Canidates-2.59-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-2.59-2024-05-01-10:40:02.json",
+   "MaxDistortion": 2.5904095904095894,
+   "AverageDistortion": 1.0244631854110395
+  },
+  "4_3": {
+   "Result": "Max Copeland Distortion: 2.278846",
+   "CandidateFileName": "Copeland-Canidates-2.28-2024-05-01-10:40:02.json",
+   "VoterFileName": "Copeland-Voters-2.28-2024-05-01-10:40:02.json",
+   "MaxDistortion": 2.2788461538461537,
+   "AverageDistortion": 1.0308403409405904
+  },
+  "4_4": {
+   "Result": "Max Copeland Distortion: 2.261538",
+   "CandidateFileName": "Copeland-Canidates-2.26-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-2.26-2024-05-01-10:40:03.json",
+   "MaxDistortion": 2.261538461538462,
+   "AverageDistortion": 1.0264215259724954
+  },
+  "4_5": {
+   "Result": "Max Copeland Distortion: 2.330593",
+   "CandidateFileName": "Copeland-Canidates-2.33-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-2.33-2024-05-01-10:40:03.json",
+   "MaxDistortion": 2.3305930710510867,
+   "AverageDistortion": 1.023073044555616
+  },
+  "4_6": {
+   "Result": "Max Copeland Distortion: 2.254438",
+   "CandidateFileName": "Copeland-Canidates-2.25-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-2.25-2024-05-01-10:40:03.json",
+   "MaxDistortion": 2.2544378698224863,
+   "AverageDistortion": 1.0220621735481379
+  },
+  "4_7": {
+   "Result": "Max Copeland Distortion: 1.971684",
+   "CandidateFileName": "Copeland-Canidates-1.97-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-1.97-2024-05-01-10:40:03.json",
+   "MaxDistortion": 1.9716840536512672,
+   "AverageDistortion": 1.0203798393856682
+  },
+  "4_8": {
+   "Result": "Max Copeland Distortion: 1.953732",
+   "CandidateFileName": "Copeland-Canidates-1.95-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-1.95-2024-05-01-10:40:03.json",
+   "MaxDistortion": 1.9537322640345465,
+   "AverageDistortion": 1.0196324772493752
+  },
+  "4_9": {
+   "Result": "Max Copeland Distortion: 1.917882",
+   "CandidateFileName": "Copeland-Canidates-1.92-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-1.92-2024-05-01-10:40:03.json",
+   "MaxDistortion": 1.917882451021259,
+   "AverageDistortion": 1.0177744546931473
+  },
+  "5_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:03.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:03.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "5_10": {
+   "Result": "Max Copeland Distortion: 1.827199",
+   "CandidateFileName": "Copeland-Canidates-1.83-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-1.83-2024-05-01-10:40:05.json",
+   "MaxDistortion": 1.8271990018714908,
+   "AverageDistortion": 1.0171549626074614
+  },
+  "5_2": {
+   "Result": "Max Copeland Distortion: 2.846154",
+   "CandidateFileName": "Copeland-Canidates-2.85-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.85-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.8461538461538445,
+   "AverageDistortion": 1.027626742629752
+  },
+  "5_3": {
+   "Result": "Max Copeland Distortion: 2.550388",
+   "CandidateFileName": "Copeland-Canidates-2.55-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.55-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.550387596899225,
+   "AverageDistortion": 1.0298851902110686
+  },
+  "5_4": {
+   "Result": "Max Copeland Distortion: 2.195686",
+   "CandidateFileName": "Copeland-Canidates-2.20-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.20-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.1956856702619407,
+   "AverageDistortion": 1.0286105318220915
+  },
+  "5_5": {
+   "Result": "Max Copeland Distortion: 2.491159",
+   "CandidateFileName": "Copeland-Canidates-2.49-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.49-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.4911591355599203,
+   "AverageDistortion": 1.023305037752989
+  },
+  "5_6": {
+   "Result": "Max Copeland Distortion: 1.968158",
+   "CandidateFileName": "Copeland-Canidates-1.97-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-1.97-2024-05-01-10:40:04.json",
+   "MaxDistortion": 1.9681580008061264,
+   "AverageDistortion": 1.0217942482347644
+  },
+  "5_7": {
+   "Result": "Max Copeland Distortion: 2.031354",
+   "CandidateFileName": "Copeland-Canidates-2.03-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.03-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.0313542361574384,
+   "AverageDistortion": 1.0205707507404418
+  },
+  "5_8": {
+   "Result": "Max Copeland Distortion: 2.021017",
+   "CandidateFileName": "Copeland-Canidates-2.02-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-2.02-2024-05-01-10:40:04.json",
+   "MaxDistortion": 2.0210169491525423,
+   "AverageDistortion": 1.0190752161148153
+  },
+  "5_9": {
+   "Result": "Max Copeland Distortion: 1.943800",
+   "CandidateFileName": "Copeland-Canidates-1.94-2024-05-01-10:40:04.json",
+   "VoterFileName": "Copeland-Voters-1.94-2024-05-01-10:40:04.json",
+   "MaxDistortion": 1.9438001784121317,
+   "AverageDistortion": 1.0180291512035624
+  },
+  "6_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:05.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "6_10": {
+   "Result": "Max Copeland Distortion: 1.768789",
+   "CandidateFileName": "Copeland-Canidates-1.77-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-1.77-2024-05-01-10:40:06.json",
+   "MaxDistortion": 1.7687888942077548,
+   "AverageDistortion": 1.016975783281994
+  },
+  "6_2": {
+   "Result": "Max Copeland Distortion: 2.508772",
+   "CandidateFileName": "Copeland-Canidates-2.51-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.51-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.5087719298245563,
+   "AverageDistortion": 1.027128333677526
+  },
+  "6_3": {
+   "Result": "Max Copeland Distortion: 2.361489",
+   "CandidateFileName": "Copeland-Canidates-2.36-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.36-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.361488904795991,
+   "AverageDistortion": 1.0323347630249375
+  },
+  "6_4": {
+   "Result": "Max Copeland Distortion: 2.308793",
+   "CandidateFileName": "Copeland-Canidates-2.31-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.31-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.3087934560327197,
+   "AverageDistortion": 1.0278195061310442
+  },
+  "6_5": {
+   "Result": "Max Copeland Distortion: 2.431709",
+   "CandidateFileName": "Copeland-Canidates-2.43-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.43-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.4317089910775564,
+   "AverageDistortion": 1.0227731686545722
+  },
+  "6_6": {
+   "Result": "Max Copeland Distortion: 2.175258",
+   "CandidateFileName": "Copeland-Canidates-2.18-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.18-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.175257731958763,
+   "AverageDistortion": 1.0219051360995657
+  },
+  "6_7": {
+   "Result": "Max Copeland Distortion: 2.000000",
+   "CandidateFileName": "Copeland-Canidates-2.00-2024-05-01-10:40:05.json",
+   "VoterFileName": "Copeland-Voters-2.00-2024-05-01-10:40:05.json",
+   "MaxDistortion": 2.0000000000000004,
+   "AverageDistortion": 1.0200001442651105
+  },
+  "6_8": {
+   "Result": "Max Copeland Distortion: 1.978389",
+   "CandidateFileName": "Copeland-Canidates-1.98-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-1.98-2024-05-01-10:40:06.json",
+   "MaxDistortion": 1.9783889980353635,
+   "AverageDistortion": 1.0195685218599986
+  },
+  "6_9": {
+   "Result": "Max Copeland Distortion: 1.837790",
+   "CandidateFileName": "Copeland-Canidates-1.84-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-1.84-2024-05-01-10:40:06.json",
+   "MaxDistortion": 1.8377896613190725,
+   "AverageDistortion": 1.0175845559169794
+  },
+  "7_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:06.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "7_10": {
+   "Result": "Max Copeland Distortion: 1.810488",
+   "CandidateFileName": "Copeland-Canidates-1.81-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-1.81-2024-05-01-10:40:07.json",
+   "MaxDistortion": 1.8104878858280775,
+   "AverageDistortion": 1.0169074008069916
+  },
+  "7_2": {
+   "Result": "Max Copeland Distortion: 2.415884",
+   "CandidateFileName": "Copeland-Canidates-2.42-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-2.42-2024-05-01-10:40:06.json",
+   "MaxDistortion": 2.4158838599487606,
+   "AverageDistortion": 1.0282630715410326
+  },
+  "7_3": {
+   "Result": "Max Copeland Distortion: 2.442754",
+   "CandidateFileName": "Copeland-Canidates-2.44-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-2.44-2024-05-01-10:40:06.json",
+   "MaxDistortion": 2.4427542033626897,
+   "AverageDistortion": 1.0303903619070247
+  },
+  "7_4": {
+   "Result": "Max Copeland Distortion: 2.228286",
+   "CandidateFileName": "Copeland-Canidates-2.23-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-2.23-2024-05-01-10:40:06.json",
+   "MaxDistortion": 2.2282859338970025,
+   "AverageDistortion": 1.0270612842035136
+  },
+  "7_5": {
+   "Result": "Max Copeland Distortion: 2.207761",
+   "CandidateFileName": "Copeland-Canidates-2.21-2024-05-01-10:40:06.json",
+   "VoterFileName": "Copeland-Voters-2.21-2024-05-01-10:40:06.json",
+   "MaxDistortion": 2.2077607113985454,
+   "AverageDistortion": 1.0234459431544145
+  },
+  "7_6": {
+   "Result": "Max Copeland Distortion: 2.232246",
+   "CandidateFileName": "Copeland-Canidates-2.23-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-2.23-2024-05-01-10:40:07.json",
+   "MaxDistortion": 2.2322456813819573,
+   "AverageDistortion": 1.0193770494240095
+  },
+  "7_7": {
+   "Result": "Max Copeland Distortion: 1.885630",
+   "CandidateFileName": "Copeland-Canidates-1.89-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-1.89-2024-05-01-10:40:07.json",
+   "MaxDistortion": 1.8856304985337247,
+   "AverageDistortion": 1.017943821081153
+  },
+  "7_8": {
+   "Result": "Max Copeland Distortion: 2.172124",
+   "CandidateFileName": "Copeland-Canidates-2.17-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-2.17-2024-05-01-10:40:07.json",
+   "MaxDistortion": 2.1721242653232586,
+   "AverageDistortion": 1.017739130615859
+  },
+  "7_9": {
+   "Result": "Max Copeland Distortion: 1.900714",
+   "CandidateFileName": "Copeland-Canidates-1.90-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-1.90-2024-05-01-10:40:07.json",
+   "MaxDistortion": 1.9007138221933808,
+   "AverageDistortion": 1.0169034683847795
+  },
+  "8_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:07.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "8_10": {
+   "Result": "Max Copeland Distortion: 1.864921",
+   "CandidateFileName": "Copeland-Canidates-1.86-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-1.86-2024-05-01-10:40:08.json",
+   "MaxDistortion": 1.8649214659685864,
+   "AverageDistortion": 1.0149457107614939
+  },
+  "8_2": {
+   "Result": "Max Copeland Distortion: 2.692066",
+   "CandidateFileName": "Copeland-Canidates-2.69-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-2.69-2024-05-01-10:40:07.json",
+   "MaxDistortion": 2.6920659858601725,
+   "AverageDistortion": 1.0257034448018139
+  },
+  "8_3": {
+   "Result": "Max Copeland Distortion: 2.263158",
+   "CandidateFileName": "Copeland-Canidates-2.26-2024-05-01-10:40:07.json",
+   "VoterFileName": "Copeland-Voters-2.26-2024-05-01-10:40:07.json",
+   "MaxDistortion": 2.263157894736842,
+   "AverageDistortion": 1.0293484828369015
+  },
+  "8_4": {
+   "Result": "Max Copeland Distortion: 2.367851",
+   "CandidateFileName": "Copeland-Canidates-2.37-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-2.37-2024-05-01-10:40:08.json",
+   "MaxDistortion": 2.367850692354004,
+   "AverageDistortion": 1.0259932679935269
+  },
+  "8_5": {
+   "Result": "Max Copeland Distortion: 2.187546",
+   "CandidateFileName": "Copeland-Canidates-2.19-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-2.19-2024-05-01-10:40:08.json",
+   "MaxDistortion": 2.1875463306152696,
+   "AverageDistortion": 1.022281199726814
+  },
+  "8_6": {
+   "Result": "Max Copeland Distortion: 1.954955",
+   "CandidateFileName": "Copeland-Canidates-1.95-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-1.95-2024-05-01-10:40:08.json",
+   "MaxDistortion": 1.954954954954955,
+   "AverageDistortion": 1.0207109554515583
+  },
+  "8_7": {
+   "Result": "Max Copeland Distortion: 2.107003",
+   "CandidateFileName": "Copeland-Canidates-2.11-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-2.11-2024-05-01-10:40:08.json",
+   "MaxDistortion": 2.1070028011204482,
+   "AverageDistortion": 1.0179469310590143
+  },
+  "8_8": {
+   "Result": "Max Copeland Distortion: 2.030260",
+   "CandidateFileName": "Copeland-Canidates-2.03-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-2.03-2024-05-01-10:40:08.json",
+   "MaxDistortion": 2.030260380014074,
+   "AverageDistortion": 1.0163649063151887
+  },
+  "8_9": {
+   "Result": "Max Copeland Distortion: 1.913274",
+   "CandidateFileName": "Copeland-Canidates-1.91-2024-05-01-10:40:08.json",
+   "VoterFileName": "Copeland-Voters-1.91-2024-05-01-10:40:08.json",
+   "MaxDistortion": 1.913274336283185,
+   "AverageDistortion": 1.0158429862945983
+  },
+  "9_1": {
+   "Result": "Max Copeland Distortion: 1.000000",
+   "CandidateFileName": "Copeland-Canidates-1.00-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-1.00-2024-05-01-10:40:09.json",
+   "MaxDistortion": 1,
+   "AverageDistortion": 1
+  },
+  "9_10": {
+   "Result": "Max Copeland Distortion: 1.781583",
+   "CandidateFileName": "Copeland-Canidates-1.78-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-1.78-2024-05-01-10:40:10.json",
+   "MaxDistortion": 1.7815833801235266,
+   "AverageDistortion": 1.015361492236372
+  },
+  "9_2": {
+   "Result": "Max Copeland Distortion: 2.500000",
+   "CandidateFileName": "Copeland-Canidates-2.50-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.50-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.499999999999998,
+   "AverageDistortion": 1.0281482103505013
+  },
+  "9_3": {
+   "Result": "Max Copeland Distortion: 2.322188",
+   "CandidateFileName": "Copeland-Canidates-2.32-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.32-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.3221884498480247,
+   "AverageDistortion": 1.031340842443473
+  },
+  "9_4": {
+   "Result": "Max Copeland Distortion: 2.287554",
+   "CandidateFileName": "Copeland-Canidates-2.29-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.29-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.287553648068671,
+   "AverageDistortion": 1.0251803653163447
+  },
+  "9_5": {
+   "Result": "Max Copeland Distortion: 2.204049",
+   "CandidateFileName": "Copeland-Canidates-2.20-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.20-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.2040490143846565,
+   "AverageDistortion": 1.021865569295848
+  },
+  "9_6": {
+   "Result": "Max Copeland Distortion: 2.022358",
+   "CandidateFileName": "Copeland-Canidates-2.02-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.02-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.0223577235772363,
+   "AverageDistortion": 1.0178655974243842
+  },
+  "9_7": {
+   "Result": "Max Copeland Distortion: 2.061968",
+   "CandidateFileName": "Copeland-Canidates-2.06-2024-05-01-10:40:09.json",
+   "VoterFileName": "Copeland-Voters-2.06-2024-05-01-10:40:09.json",
+   "MaxDistortion": 2.0619684082624548,
+   "AverageDistortion": 1.016494551264648
+  },
+  "9_8": {
+   "Result": "Max Copeland Distortion: 1.800244",
+   "CandidateFileName": "Copeland-Canidates-1.80-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-1.80-2024-05-01-10:40:10.json",
+   "MaxDistortion": 1.80024434941967,
+   "AverageDistortion": 1.0156020569072857
+  },
+  "9_9": {
+   "Result": "Max Copeland Distortion: 1.630534",
+   "CandidateFileName": "Copeland-Canidates-1.63-2024-05-01-10:40:10.json",
+   "VoterFileName": "Copeland-Voters-1.63-2024-05-01-10:40:10.json",
+   "MaxDistortion": 1.6305343511450383,
+   "AverageDistortion": 1.0144890463206944
+  }
+ }
+}
