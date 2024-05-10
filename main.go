@@ -461,6 +461,7 @@ func runAndDisplayResults(numRuns int, numCandidates int, numVoters int, maxPosi
 
 }
 
+// Handles the multi-simulation window
 func multiSimulation(app fyne.App) {
 	myApp := app
 
@@ -682,6 +683,7 @@ func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVote
 
 }
 
+// Function to display/save the graphs
 func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool) {
 	myApp := app
 	confirmLabelText := "Select a graph to generate"

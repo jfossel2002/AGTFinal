@@ -1,5 +1,8 @@
 package primary
 
+/*
+This file contains the functions to run a simulation over a range as well as the graph generation logic for the multi-simulation.
+*/
 import (
 	"encoding/json"
 	"fmt"
@@ -17,6 +20,7 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
+// Structs for the multi-simulation
 type MultiInput struct {
 	NumCandidates int
 	NumVoters     int
@@ -34,6 +38,7 @@ type MultiResults struct {
 	Results map[string]MultiOutput
 }
 
+// Function to run a multi-simulation over a range of candidates and voters
 func Multi_sim(minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (map[MultiInput]MultiOutput, string) {
 	results := make(map[MultiInput]MultiOutput)
 	for candidates := minCandidates; candidates <= maxCandidates; candidates++ {
@@ -66,6 +71,7 @@ func Multi_sim(minCandidates int, maxCandidates int, minVoters int, maxVoters in
 	return results, fileName
 }
 
+// Function to convert the map of results to a MultiResults struct
 func convertToMultiResults(results map[MultiInput]MultiOutput, fileName string) MultiResults {
 	multiResults := MultiResults{
 		Results: make(map[string]MultiOutput),
@@ -77,6 +83,7 @@ func convertToMultiResults(results map[MultiInput]MultiOutput, fileName string) 
 	return multiResults
 }
 
+// Function to save the results of the multi-simulation to a JSON file
 func saveJSON(results MultiResults, fileName string) error {
 	file, err := json.MarshalIndent(results, "", " ")
 	if err != nil {
@@ -90,6 +97,7 @@ func saveJSON(results MultiResults, fileName string) error {
 	return nil
 }
 
+// Function to read the results of a multi-simulation from a JSON file then graph the results
 func ReadAndGraphMultiResults(fileName string, isMax bool, isCandidates bool) string {
 	results := MultiResults{}
 	err := readJSON(fileName, &results)
@@ -102,6 +110,7 @@ func ReadAndGraphMultiResults(fileName string, isMax bool, isCandidates bool) st
 	return MultiGraph(allPairs, results, isMax, isCandidates)
 }
 
+// Function to generate a random color
 func RandomColor() color.RGBA {
 	rand.Seed(time.Now().UnixNano())
 	return color.RGBA{
@@ -112,6 +121,7 @@ func RandomColor() color.RGBA {
 	}
 }
 
+// Function to generate a multi-graph i,e, a graph with multiple lines
 func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bool) string {
 	p := plot.New()
 
@@ -205,6 +215,7 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 
 }
 
+// Parses a set of multiresults to get the unique values of candidates or voters
 func MultiParse(results MultiResults, isCandidates bool) []int {
 	seenValues := make(map[int]bool)
 	for key := range results.Results {
@@ -232,6 +243,7 @@ func MultiParse(results MultiResults, isCandidates bool) []int {
 	return keys
 }
 
+// Parses a set of multiresults to get the distortion values for a specific number of candidates or voters
 func ParseCandidatesOrVoters(results MultiResults, numCandiatesOrVoters int, isCandidates bool, isMax bool) map[int]float64 {
 	parsedData := make(map[int]float64)
 	for key, value := range results.Results {
@@ -276,6 +288,7 @@ func ParseCandidatesOrVoters(results MultiResults, numCandiatesOrVoters int, isC
 	return parsedData
 }
 
+// Reads a JSON file and unmarshals the data into a MultiResults struct
 func readJSON(fileName string, results *MultiResults) error {
 	file, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -288,6 +301,7 @@ func readJSON(fileName string, results *MultiResults) error {
 	return nil
 }
 
+// Function to graph the results of a single simulation
 func GraphOneResults(mapData map[int]float64) {
 	p := plot.New()
 
