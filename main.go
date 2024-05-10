@@ -160,12 +160,12 @@ func displayVotingResults(myApp fyne.App, candidatesFileName, votersFileName str
 	pluralityVetoWinnerDistortion := voting_systems.GetDistortion(voting_systems.GetSocailCost(pluralityVetoWinner, voters), optimalCost)
 
 	// Create widgets to display results
-	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Canidate w/ cost: %s %.2f", optCanidate.Name, optimalCost))
-	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s, distortion: %.2f", stvWinner.Name, stvWinnerDistortion))
-	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s, distortion: %.2f", bordaWinner.Name, bordaWinnerDistortion))
-	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s, distortion: %.2f", pluralityWinner.Name, pluralityWinnerDistortion))
-	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s, distortion: %.2f", copelandWinner.Name, copelandWinnerDistortion))
-	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s, distortion: %.2f", pluralityVetoWinner.Name, pluralityVetoWinnerDistortion))
+	optimalCostLabel := widget.NewLabel(fmt.Sprintf("Optimal Canidate w/ cost: %s %.4f", optCanidate.Name, optimalCost))
+	stvWinnerLabel := widget.NewLabel(fmt.Sprintf("STV Winner: %s, distortion: %.4f", stvWinner.Name, stvWinnerDistortion))
+	bordaWinnerLabel := widget.NewLabel(fmt.Sprintf("Borda Winner: %s, distortion: %.4f", bordaWinner.Name, bordaWinnerDistortion))
+	pluralityWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Winner: %s, distortion: %.4f", pluralityWinner.Name, pluralityWinnerDistortion))
+	copelandWinnerLabel := widget.NewLabel(fmt.Sprintf("Copeland Winner: %s, distortion: %.4f", copelandWinner.Name, copelandWinnerDistortion))
+	pluralityVetoWinnerLabel := widget.NewLabel(fmt.Sprintf("Plurality Veto Winner: %s, distortion: %.4f", pluralityVetoWinner.Name, pluralityVetoWinnerDistortion))
 
 	voterTable := container.NewVScroll(createVoterTable(voters))
 	voterTable.SetMinSize(fyne.NewSize(400, 200))
@@ -461,6 +461,7 @@ func runAndDisplayResults(numRuns int, numCandidates int, numVoters int, maxPosi
 
 }
 
+// Handles the multi-simulation window
 func multiSimulation(app fyne.App) {
 	myApp := app
 
@@ -546,8 +547,10 @@ func multiSimulation(app fyne.App) {
 		outputText := ""
 		for _, key := range keys {
 			value := result[key]
-			candidateSelectedNumber := selectedNumCandidates[0:1]
-			voterSelectedNumber := selectedNumVoters[0:1]
+			candidateSelectedNumberString := strings.Split(selectedNumCandidates, " ")
+			candidateSelectedNumber := candidateSelectedNumberString[0]
+			voterSelectedNumberString := strings.Split(selectedNumVoters, " ")
+			voterSelectedNumber := voterSelectedNumberString[0]
 			if candidateSelectedNumber == "A" {
 				candidateSelectedNumber = "All"
 			}
@@ -680,6 +683,7 @@ func multiSimResults(app fyne.App, minCandidates int, maxCandidates int, minVote
 
 }
 
+// Function to display/save the graphs
 func DisplayGraphs(app fyne.App, fileName string, isMax bool, isCandidates bool) {
 	myApp := app
 	confirmLabelText := "Select a graph to generate"

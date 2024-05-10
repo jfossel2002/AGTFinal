@@ -1,0 +1,47 @@
+[
+ {
+  "Name": "Candidate0",
+  "Position": 0.03,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate1",
+  "Position": 0.58,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate2",
+  "Position": 0.48,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate3",
+  "Position": 0.41,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate4",
+  "Position": 0.6,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate5",
+  "Position": 0.99,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate6",
+  "Position": 0.92,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate7",
+  "Position": 0.63,
+  "NumVotes": 0
+ },
+ {
+  "Name": "Candidate8",
+  "Position": 0.75,
+  "NumVotes": 0
+ }
+]

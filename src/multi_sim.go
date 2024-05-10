@@ -1,5 +1,8 @@
 package primary
 
+/*
+This file contains the functions to run a simulation over a range as well as the graph generation logic for the multi-simulation.
+*/
 import (
 	"encoding/json"
 	"fmt"
@@ -9,6 +12,7 @@ import (
 	"math/rand"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"gonum.org/v1/plot"
@@ -16,6 +20,7 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
+// Structs for the multi-simulation
 type MultiInput struct {
 	NumCandidates int
 	NumVoters     int
@@ -33,6 +38,7 @@ type MultiResults struct {
 	Results map[string]MultiOutput
 }
 
+// Function to run a multi-simulation over a range of candidates and voters
 func Multi_sim(minCandidates int, maxCandidates int, minVoters int, maxVoters int, numRuns int, maxPosition float64, minPosition float64, totalVoters int, votingSystem string) (map[MultiInput]MultiOutput, string) {
 	results := make(map[MultiInput]MultiOutput)
 	for candidates := minCandidates; candidates <= maxCandidates; candidates++ {
@@ -65,6 +71,7 @@ func Multi_sim(minCandidates int, maxCandidates int, minVoters int, maxVoters in
 	return results, fileName
 }
 
+// Function to convert the map of results to a MultiResults struct
 func convertToMultiResults(results map[MultiInput]MultiOutput, fileName string) MultiResults {
 	multiResults := MultiResults{
 		Results: make(map[string]MultiOutput),
@@ -76,6 +83,7 @@ func convertToMultiResults(results map[MultiInput]MultiOutput, fileName string) 
 	return multiResults
 }
 
+// Function to save the results of the multi-simulation to a JSON file
 func saveJSON(results MultiResults, fileName string) error {
 	file, err := json.MarshalIndent(results, "", " ")
 	if err != nil {
@@ -89,6 +97,7 @@ func saveJSON(results MultiResults, fileName string) error {
 	return nil
 }
 
+// Function to read the results of a multi-simulation from a JSON file then graph the results
 func ReadAndGraphMultiResults(fileName string, isMax bool, isCandidates bool) string {
 	results := MultiResults{}
 	err := readJSON(fileName, &results)
@@ -101,6 +110,7 @@ func ReadAndGraphMultiResults(fileName string, isMax bool, isCandidates bool) st
 	return MultiGraph(allPairs, results, isMax, isCandidates)
 }
 
+// Function to generate a random color
 func RandomColor() color.RGBA {
 	rand.Seed(time.Now().UnixNano())
 	return color.RGBA{
@@ -111,6 +121,7 @@ func RandomColor() color.RGBA {
 	}
 }
 
+// Function to generate a multi-graph i,e, a graph with multiple lines
 func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bool) string {
 	p := plot.New()
 
@@ -159,7 +170,7 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 		sort.Ints(keys)
 		for _, key := range keys {
 			val := parsedData[key]
-			pts = append(pts, plotter.XY{X: float64(key - 48), Y: val})
+			pts = append(pts, plotter.XY{X: float64(key), Y: val})
 		}
 
 		lpLine, lpPoints, err := plotter.NewLinePoints(pts)
@@ -172,9 +183,9 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 
 		p.Add(lpLine, lpPoints)
 		if isCandidates {
-			p.Legend.Add(fmt.Sprintf("Candidates %d", value), lpLine, lpPoints)
+			p.Legend.Add(fmt.Sprintf("Candidates %d", value+1), lpLine, lpPoints)
 		} else {
-			p.Legend.Add(fmt.Sprintf("Voters %d", value), lpLine, lpPoints)
+			p.Legend.Add(fmt.Sprintf("Voters %d", value+1), lpLine, lpPoints)
 		}
 	}
 
@@ -204,19 +215,26 @@ func MultiGraph(mapData []int, results MultiResults, isMax bool, isCandidates bo
 
 }
 
+// Parses a set of multiresults to get the unique values of candidates or voters
 func MultiParse(results MultiResults, isCandidates bool) []int {
-	checkIndex := 0
-	if isCandidates {
-		checkIndex = 0
-	} else {
-		checkIndex = 2
-	}
 	seenValues := make(map[int]bool)
 	for key := range results.Results {
-		if seenValues[int(key[checkIndex])] {
-			continue
+		numEach := strings.Split(key, "_")
+		numCandidates := numEach[0]
+		numVoters := numEach[1]
+		if isCandidates {
+			value, _ := strconv.Atoi(string(numCandidates))
+			if seenValues[value] {
+				continue
+			}
+			seenValues[value] = true
+		} else {
+			value, _ := strconv.Atoi(string(numVoters))
+			if seenValues[value] {
+				continue
+			}
+			seenValues[value] = true
 		}
-		seenValues[int(key[checkIndex])] = true
 	}
 	keys := make([]int, 0, len(seenValues))
 	for key := range seenValues {
@@ -225,32 +243,43 @@ func MultiParse(results MultiResults, isCandidates bool) []int {
 	return keys
 }
 
+// Parses a set of multiresults to get the distortion values for a specific number of candidates or voters
 func ParseCandidatesOrVoters(results MultiResults, numCandiatesOrVoters int, isCandidates bool, isMax bool) map[int]float64 {
 	parsedData := make(map[int]float64)
-	checkValue := 0
-	if isCandidates {
-		checkValue = 0
-	} else {
-		checkValue = 2
-	}
 	for key, value := range results.Results {
-		string_value, err := strconv.Atoi(string(key[checkValue]))
-		if err != nil {
-			fmt.Println("Error converting string to int:", err)
+		numEach := strings.Split(key, "_")
+		numCandidates := numEach[0]
+		numVoters := numEach[1]
+		string_value := 0
+		err := error(nil)
+		if isCandidates {
+			string_value, err = strconv.Atoi(string(numCandidates))
+			if err != nil {
+				fmt.Println("Error converting string to int:", err)
+			}
+		} else {
+			string_value, err = strconv.Atoi(string(numVoters))
+			if err != nil {
+				fmt.Println("Error converting string to int:", err)
+			}
 		}
 
 		if string_value == numCandiatesOrVoters {
 			if isMax {
 				if isCandidates {
-					parsedData[int(key[checkValue+2])] = value.MaxDistortion
+					position, _ := strconv.Atoi(numVoters)
+					parsedData[position] = value.MaxDistortion
 				} else {
-					parsedData[int(key[checkValue-2])] = value.MaxDistortion
+					position, _ := strconv.Atoi(numCandidates)
+					parsedData[position] = value.MaxDistortion
 				}
 			} else {
 				if isCandidates {
-					parsedData[int(key[checkValue+2])] = value.AverageDistortion
+					position, _ := strconv.Atoi(numVoters)
+					parsedData[position] = value.AverageDistortion
 				} else {
-					parsedData[int(key[checkValue-2])] = value.AverageDistortion
+					position, _ := strconv.Atoi(numCandidates)
+					parsedData[position] = value.AverageDistortion
 				}
 			}
 		}
@@ -259,6 +288,7 @@ func ParseCandidatesOrVoters(results MultiResults, numCandiatesOrVoters int, isC
 	return parsedData
 }
 
+// Reads a JSON file and unmarshals the data into a MultiResults struct
 func readJSON(fileName string, results *MultiResults) error {
 	file, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -271,6 +301,7 @@ func readJSON(fileName string, results *MultiResults) error {
 	return nil
 }
 
+// Function to graph the results of a single simulation
 func GraphOneResults(mapData map[int]float64) {
 	p := plot.New()
 
